@@ -1,0 +1,732 @@
+<?php 
+$role=$this->session->userdata('role');
+ include_once APPPATH . 'views/main_head.php';
+ ?>
+<?php $running_year = get_running_year();
+?>
+
+
+<div class="main-content">
+				<div class="main-content-inner">
+					<!-- #section:basics/content.breadcrumbs -->
+					<div class="breadcrumbs" id="breadcrumbs">
+						<script type="text/javascript">
+							try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+						</script>
+
+						<ul class="breadcrumb">
+							<li>
+								<i class="ace-icon fa fa-home home-icon"></i>
+								<a href="#">Home</a>
+							</li>
+							<li class="active">Attendance Report</li>
+						</ul><!-- /.breadcrumb -->
+
+						<!-- #section:basics/content.searchbox -->
+						<div class="nav-search" id="nav-search">
+							<form class="form-search">
+								<span class="input-icon">
+									
+								</span>
+							</form>
+						</div><!-- /.nav-search -->
+
+						<!-- /section:basics/content.searchbox -->
+					</div>
+
+					<!-- /section:basics/content.breadcrumbs -->
+					<div class="page-content">
+						
+                        <div class="page-header">
+							<h1>
+								STUDENT
+								<small>
+									<i class="ace-icon fa fa-angle-double-right"></i>
+									Attendance Report
+								</small>
+							</h1>
+						</div>
+                        <?php echo form_open(base_url() . 'index.php/admin/attendance_report_selector/'); ?>
+
+<div class="white-box">
+    <div class="row">
+        <?php
+		$this->db->where('academic_year',get_running_year());
+        $query = $this->db->get('class');
+        if ($query->num_rows() > 0):
+            $class = $query->result_array();
+            ?>
+            <?php if($this->session->userdata('role')==1 || $this->session->userdata('role')==2){ ?>
+        <div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;">Branch</label>
+			<select name="branch" class="select2" id="branch" onChange="return get_dept(this.value)">
+                              <option value="">Select</option>
+                              <?php $branch=$this->db->get('tbl_branch')->result_array();
+							  foreach ($branch as $branch1)
+							  {
+							  ?><option value="<?php echo $branch1['branch_id'];?>"><?php echo $branch1['branch_name'];?></option>
+                              <?php }?>
+                              
+                          </select>
+		</div>
+	</div>
+    
+    <div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;">Department</label>
+			<select name="department" class="select2" id="department" onChange="return get_class(this.value)">
+                              <option value="">Select</option>
+                             
+                              
+                          </select>
+		</div>
+	</div>
+
+
+	<div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;">Class</label>
+			<select name="class_id" class="select2" onchange="select_section(this.value)" id="class_id">
+				<option value="">Select</option>
+				
+			</select>
+		</div>
+	</div>
+    <?php } endif; ?>
+    <?php if($this->session->userdata('role')==3)
+{?>
+<div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;">Department</label>
+			<select name="department" class="select2" id="department" onChange="return get_class(this.value)">
+            <option value="">Select</option>
+                              <?php 
+							  $this->db->where('branch_id',$this->session->userdata('branch_id'));
+							  $dept=$this->db->get('tbl_department')->result_array();
+							  foreach ($dept as $dept1)
+							  {
+							  ?><option value="<?php echo $dept1['dept_id'];?>"><?php echo $dept1['dept_name'];?></option>
+                              <?php }?>
+                             
+                             
+                              
+                          </select>
+		</div>
+	</div>
+<div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;">Class</label>
+			<select name="class_id" class="select2" onchange="select_section(this.value)" id="class_id">
+				<option value="">Select</option>
+				
+			</select>
+		</div>
+	</div>
+
+<?php }?>
+<?php if($this->session->userdata('role')==4 || $this->session->userdata('role')==12)
+{?>
+<div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;">Class</label>
+			<select name="class_id" class="select2" onchange="select_section(this.value)" id="class_id">
+				<option value="">Select</option>
+                <?php 
+                                                                        $yr=get_running_year();
+									 $branch	=$this->session->userdata('branch_id');
+									 $dept	=	$this->session->userdata('dept_id');
+									 $this->db->where('branch_id',$branch);
+									 $this->db->where('dept_id',$dept);
+									 $this->db->where('academic_year',$yr);
+									 $class 	=	$this->db->get('class')->result_array();
+									 foreach($class as $data){?>
+                                      <option value="<?php echo $data['class_id']?>"><?php echo $data['name']?></option>
+                                       <?php } ?>
+				
+			</select>
+		</div>
+	</div>
+    <?php }?>
+
+        <?php
+        $query = $this->db->get_where('section', array('class_id' => $class_id));
+        if ($query->num_rows() > 0):
+            $sections = $query->result_array();
+            ?>
+            <div id="section_holder">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label" style="margin-bottom: 5px;">Section</label>
+                        <select class="select2" name="section_id">
+                            <?php foreach ($sections as $row): ?>
+                                <option value="<?php echo $row['section_id']; ?>"
+                                        <?php if ($section_id == $row['section_id']) echo 'selected'; ?>><?php echo $row['name']; ?></option>
+                                    <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="control-label" style="margin-bottom: 5px;">Month</label>
+                <select name="month" class="select2" id="month">
+                    <?php
+                    for ($i = 1; $i <= 12; $i++):
+                if ($i == 1)
+                    $m ='January';
+                else if ($i == 2)
+                    $m = 'February';
+                else if ($i == 3)
+                    $m = 'March';
+                else if ($i == 4)
+                    $m = 'April';
+                else if ($i == 5)
+                    $m = 'May';
+                else if ($i == 6)
+                    $m = 'June';
+                else if ($i == 7)
+                    $m = 'July';
+                else if ($i == 8)
+                    $m = 'August';
+                else if ($i == 9)
+                    $m = 'September';
+                else if ($i == 10)
+                    $m = 'October';
+                else if ($i == 11)
+                    $m = 'November';
+                else if ($i == 12)
+                    $m = 'December';
+                        ?>
+                        <option value="<?php echo $i; ?>"
+                                <?php if ($month == $i) echo 'selected'; ?>  >
+                                    <?php echo $m; ?>
+                        </option>
+                        <?php
+						//$mi=$i;
+                    endfor;
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+         <div class="form-group">
+                <label class="control-label" style="margin-bottom: 5px;">Year</label>
+        <select name="year1" class="select2" id="year1" >
+          <option value="">Select</option>
+         <?php $i= date('Y');
+?>                <option value="<?php echo $i-1;?>"><?php echo $i-1;?>
+                      
+                </option>
+                 <option value="<?php echo $i;?>" selected="selected"><?php echo $i;?>
+                      
+                </option>
+                  <option value="<?php echo $i+1;?>"><?php echo $i+1;?>
+                      
+                </option>
+                <?php
+          
+            ?>
+        </select>
+         </div>
+    </div>
+        <input type="hidden" name="year" value="<?php echo $running_year; ?>">
+       
+       
+       <div class="col-md-2">
+     <div class="form-group">
+         <label class="control-label" style="margin-bottom: 5px;"></label>
+            <div class="" >
+		       <button type="submit" class="btn btn-info">Show</button>
+            </div>
+     </div>
+	</div>
+    
+    
+    </div>
+
+
+    <?php if ($class_id != '' && $section_id != '' && $i != ''): ?>
+        <?php if($this->db->get_where('settings',array('type'=>'afternoon_attendance'))->row()->description!='yes'): ?>
+        <br>
+<div class="box-body" id="printableArea">
+
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4"></div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+            
+                <center><p><i class="fa fa-check-circle" aria-hidden="true"></i> Present &nbsp;&nbsp;&nbsp;<i class="fa fa-times-circle" style="color: #ee4749;"></i> Absent &nbsp;&nbsp;&nbsp;<i class="fa fa-certificate" style="color: #fec42d;"></i> Late&nbsp;&nbsp;&nbsp; <?php if($this->db->get_where('settings' , array('type' =>'diary'))->row()->description == '1')
+              {
+			  ?><i class="fa fa-pencil-square" style="color: #e81d26;"></i> No Diary &nbsp;&nbsp;&nbsp;<?php }?>
+              <?php if($this->db->get_where('settings' , array('type' =>'half_day_leave'))->row()->description == 'yes')
+              {
+			  ?>
+              	<i class="fa fa-adjust" aria-hidden="true" style="color:#FF7D94"></i> Half Day &nbsp;&nbsp;&nbsp;
+			  <?php 
+			  }
+			  ?>
+              
+              <a href="<?php echo base_url();?>index.php/admin/attendance_print/<?php echo $class_id;?>/<?php echo $section_id;?>/<?php echo $month;?>/<?php echo $year1;?>" class="btn btn-info" target="_blank">
+				<font color="#FFFFFF">Print</font></a>
+			</button></p>
+             
+                
+                </center>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="my_table">
+                        <thead>
+                            <tr>
+                                <td style="text-align: center;">
+                                    Students <i class="entypo-down-thin"></i> | Date <i class="entypo-right-thin"></i>
+                                </td>
+                                
+                                <?php
+                               $year = explode('-', $running_year);
+                                 $days = cal_days_in_month(CAL_GREGORIAN, $month, $year[0]);
+                                for ($i = 1; $i <= $days; $i++) {
+                                    ?>
+                                    <td style="text-align: center;" ><?php echo $i; ?>
+                                    </td>
+                                <?php } ?>
+                                <td style="text-align: center;">
+                                    Present/Total
+                                </td>
+                                <td style="text-align: center;">
+                                    Percentage
+                                </td>
+                               
+                                
+                               
+                            </tr>
+                           <!-- <tr>
+                            	<td></td>
+                                <?php
+								$year = explode('-', $running_year);
+                                $days = cal_days_in_month(CAL_GREGORIAN, $month, $year[0]);
+                                for ($i = 1; $i <= $days; $i++) {
+								?>
+                                	<td>M</td>
+                                	<td>A</td>
+                                <?php
+								}
+								?>
+                                <td></td>
+                                <td></td>
+                            </tr> -->
+                        </thead>
+                        <tbody>
+                            <?php
+                            $data = array();
+                            $yr=get_running_year();
+							$this->db->where('class_id',$class_id);
+							$this->db->where('year',$yr);
+							$this->db->where('section_id',$section_id);
+							$this->crud_model->check_student_status();
+							$this->db->join('student s', 's.student_id = e.student_id', 'left');
+                            $students = $this->db->get('enroll e')->result_array();
+                            foreach ($students as $row) {
+                                $total = 0;
+                                $present = 0;
+                                ?>
+                                
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <?php echo $this->db->get_where('student', array('student_id' => $row['student_id']))->row()->name; ?>
+                                    </td>
+                                    
+                                    
+                                    <?php
+                                    for ($i = 1; $i <= $days; $i++) {
+                                        $timestamp = strtotime($i . '-' . $month . '-' .$year1);
+                                        $this->db->group_by('timestamp');
+                                        $attendance = $this->db->get_where('attendance', array('section_id' => $section_id, 'class_id' => $class_id, 'year' => $running_year, 'timestamp' => $timestamp, 'student_id' => $row['student_id']))->result_array();
+										//echo $this->db->last_query();
+	/*if($i==5)
+	{ echo $this->db->last_query();die();}*/
+                                        $status = 0;
+                                        foreach ($attendance as $row2) {
+                                            $month_dummy = date('d', $row2['timestamp']);
+
+                                            if ($i == $month_dummy) {
+                                                $status = $row2['status'];
+                                            }
+											 $timestamp= $row2['timestamp'];
+                                        };
+                                        ?>
+                                         
+                                        
+                                        <td style="text-align: center;" >
+                                            <?php if ($status == 1) { ?>
+                                                <i class="fa fa-check-circle" title="Present" data-toggle="tooltip" style="color: #00a651;"></i></i>
+                                            <?php } if ($status == 2) { ?>
+                                                <i class="fa fa-times-circle" title="Absent" data-toggle="tooltip" style="color: #ee4749;"></i>
+                                            <?php } if ($status == 3) { ?>
+                                                <i class="fa fa-certificate" title="Late" data-toggle="tooltip" style="color: #fec42d;"></i>
+                                                <?php
+                                            }
+											 if($this->db->get_where('settings' , array('type' =>'diary'))->row()->description == '1')
+                                            {
+			 
+											if ($status == 4) { ?>
+                                                <i class="fa fa-pencil-square" title="No Diary" data-toggle="tooltip" style="color: #e81d26;"></i>
+                                                <?php
+                                            }
+											}
+											if($this->db->get_where('settings' , array('type' =>'half_day_leave'))->row()->description == 'yes')
+											{
+												if ($status == 5) { ?>
+                                                	<i class="fa fa-adjust" aria-hidden="true" style="color:#FF7D94" title="Half Day" data-toggle="tooltip"></i>
+													<?php
+												}
+											}
+                                            if (0 != $status) {
+                                                $total++;
+                                            }
+											if($this->db->get_where('settings' , array('type' =>'diary'))->row()->description == '1')
+                                            {
+												if (1 == $status || 3 == $status || 4 == $status) 
+												{
+													$present++;
+												}
+												if(5 == $status)
+												{
+													$present	=	$present+0.5;
+												}
+											}
+											else
+											{
+												if (1 == $status || 3 == $status) 
+												{
+                                                	$present++;
+                                                }
+												if(5 == $status)
+												{
+													$present	=	$present+0.5;
+												}
+											}
+                                            ?>
+                                        </td>
+                                        
+                                    <?php } ?>
+                                    <td style="text-align: center;">
+                                        <?php $m= $present . "/" . $total; 
+										 echo $m;
+										
+										 ?>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <?php if($total==0){
+										echo "NA";
+										}
+										else{
+                                        $percentage = round(($present / $total) * 100,2);
+									echo $percentage;}
+
+                                        ?>
+                                    </td>
+                                    <?php $student_id= $row['student_id'];
+									                  
+									?>
+                                    <td style="text-align: center;"><a href="<?php echo base_url();?>index.php/admin/attendance_messages/<?php echo $class_id;?>/<?php echo $section_id;?>/<?php echo $student_id;?>/<?php echo $present;?>/<?php echo $total;?>/<?php echo $percentage;?>/<?php echo $month;?>" class="btn btn-info" >
+				<font color="#FFFFFF">Send SMS</font></a></td>
+                                </tr>
+                                
+                            <?php } ?>
+                            
+                        </tbody>
+                    </table>
+
+                   
+                </div>
+            </div>
+        </div>
+ </div>
+ 	<?php else: ?>
+        <br>
+<div class="box-body" id="printableArea">
+
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4"></div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+            
+                <center><p><i class="fa fa-check-circle" aria-hidden="true"></i> Present &nbsp;&nbsp;&nbsp;<i class="fa fa-times-circle" style="color: #ee4749;"></i> Absent &nbsp;&nbsp;&nbsp;<i class="fa fa-certificate" style="color: #fec42d;"></i> Late&nbsp;&nbsp;&nbsp; <?php if($this->db->get_where('settings' , array('type' =>'diary'))->row()->description == '1')
+              {
+			  ?><i class="fa fa-pencil-square" style="color: #e81d26;"></i> No Diary &nbsp;&nbsp;&nbsp;<?php }?>
+              
+              <a href="<?php echo base_url();?>index.php/admin/attendance_print/<?php echo $class_id;?>/<?php echo $section_id;?>/<?php echo $month;?>/<?php echo $year1;?>" class="btn btn-info" target="_blank">
+				<font color="#FFFFFF">Print</font></a>
+			</button></p>
+             
+                
+                </center>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="my_table">
+                        <thead>
+                            <tr>
+                                <td style="text-align: center;">
+                                    Students <i class="entypo-down-thin"></i> | Date <i class="entypo-right-thin"></i>
+                                </td>
+                                <td></td>
+                                <?php
+                               $year = explode('-', $running_year);
+                                 $days = cal_days_in_month(CAL_GREGORIAN, $month, $year[0]);
+                                for ($i = 1; $i <= $days; $i++) {
+                                    ?>
+                                    <td style="text-align: center;" ><?php echo $i; ?>
+                                    </td>
+                                <?php } ?>
+                                <td style="text-align: center;">
+                                    Present/Total
+                                </td>
+                                <td style="text-align: center;">
+                                    Percentage
+                                </td>
+                               
+                                
+                               
+                            </tr>
+                           <!-- <tr>
+                            	<td></td>
+                                <?php
+								$year = explode('-', $running_year);
+                                $days = cal_days_in_month(CAL_GREGORIAN, $month, $year[0]);
+                                for ($i = 1; $i <= $days; $i++) {
+								?>
+                                	<td>M</td>
+                                	<td>A</td>
+                                <?php
+								}
+								?>
+                                <td></td>
+                                <td></td>
+                            </tr> -->
+                        </thead>
+                        <tbody>
+                            <?php
+                            $data = array();
+                                    $yr=get_running_year();
+							$this->db->where('class_id',$class_id);
+							$this->db->where('year',$yr);
+							$this->db->where('section_id',$section_id);
+							$this->crud_model->check_student_status();
+							$this->db->join('student s', 's.student_id = e.student_id', 'left');
+                            $students = $this->db->get('enroll e')->result_array();
+                            foreach ($students as $row) {
+                                $total = 0;
+                                $present = 0;
+                                ?>
+                                
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <?php echo $this->db->get_where('student', array('student_id' => $row['student_id']))->row()->name; ?>
+                                    </td>
+                                    <td>
+                                    	Morning<br />Afternoon
+                                    </td>
+                                    
+                                    
+                                    <?php
+                                    for ($i = 1; $i <= $days; $i++) {
+                                        $timestamp = strtotime($i . '-' . $month . '-' .$year1);
+                                        //$this->db->group_by('timestamp');
+                                        $attendance = $this->db->get_where('attendance', array('section_id' => $section_id, 'class_id' => $class_id, 'year' => $running_year, 'timestamp' => $timestamp, 'student_id' => $row['student_id']))->result_array();
+										//echo $this->db->last_query();die();
+	/*if($i==9)
+	{ echo $this->db->last_query();die();}*/
+                                        ?>
+                                         
+                                        
+                                        <td style="text-align: center;" >
+											<?php
+											/*echo "<pre>";
+											print_r($attendance);
+											echo "</pre>";*/
+                                            $status = 0;
+                                            foreach ($attendance as $row2) {
+                                                $month_dummy = date('d', $row2['timestamp']);
+    
+                                                if ($i == $month_dummy && $row2['time'] == 'morning') {
+                                                    $status = $row2['status'];
+                                                }
+                                                elseif($i == $month_dummy && $row2['time'] == 'afternoon')
+                                                {
+                                                    $status = $row2['status'];
+                                                }
+                                                 $timestamp= $row2['timestamp'];
+											/**********/	 
+                                             if ($status == 1) { ?>
+                                                <i class="fa fa-check-circle" title="Present" data-toggle="tooltip" style="color: #00a651;"></i></i>
+                                            <?php } if ($status == 2) { ?>
+                                                <i class="fa fa-times-circle" title="Absent" data-toggle="tooltip" style="color: #ee4749;"></i>
+                                            <?php } if ($status == 3) { ?>
+                                                <i class="fa fa-certificate" title="Late" data-toggle="tooltip" style="color: #fec42d;"></i>
+                                                <?php
+                                            }
+											 if($this->db->get_where('settings' , array('type' =>'diary'))->row()->description == '1')
+                                            {
+			 
+											if ($status == 4) { ?>
+                                                <i class="fa fa-pencil-square" title="No Diary" data-toggle="tooltip" style="color: #e81d26;"></i>
+                                                <?php
+                                            	}
+											}
+                                            if (0 != $status) {
+                                                $total=$total+0.5;
+                                            }
+											if($this->db->get_where('settings' , array('type' =>'diary'))->row()->description == '1')
+                                                 {
+                                                 if (1 == $status || 3 == $status || 4 == $status) {
+                                                $present=$present+0.5;
+                                                 }
+											}
+											else{
+											  if (1 == $status || 3 == $status) {
+                                                $present=$present+0.5;
+                                                }
+											}
+                                           
+											/**********/	 
+                                            };
+                                            ?>
+                                        </td>
+                                        
+                                    <?php } ?>
+                                    <td style="text-align: center;">
+                                        <?php $m= $present . "/" . $total; 
+										 echo $m;
+										
+										 ?>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <?php if($total==0){
+										echo "NA";
+										}
+										else{
+                                        $percentage = round(($present / $total) * 100,2);
+									echo $percentage;}
+
+                                        ?>
+                                    </td>
+                                    <?php $student_id= $row['student_id'];
+									                  
+									?>
+                                    <td style="text-align: center;"><a href="<?php echo base_url();?>index.php/admin/attendance_messages/<?php echo $class_id;?>/<?php echo $section_id;?>/<?php echo $student_id;?>/<?php echo $present;?>/<?php echo $total;?>/<?php echo $percentage;?>/<?php echo $month;?>" class="btn btn-info" >
+				<font color="#FFFFFF">Send SMS</font></a></td>
+                                </tr>
+                                
+                            <?php } ?>
+                            
+                        </tbody>
+                    </table>
+
+                   
+                </div>
+            </div>
+        </div>
+ </div>
+	<?php endif; ?>
+  <?php endif; ?>
+</div>
+</div></div>
+</div>
+<?php include_once APPPATH . 'views/footer.php'; ?>
+<script type="text/javascript">
+    $(document).ready(function () { 
+        if ($.isFunction($.fn.selectBoxIt))
+        {
+            $("select.selectboxit").each(function (i, el)
+            {
+                var $this = $(el),
+                        opts = {
+                            showFirstOption: attrDefault($this, 'first-option', true),
+                            'native': attrDefault($this, 'native', false),
+                            defaultText: attrDefault($this, 'text', ''),
+                        };
+
+                $this.addClass('visible');
+                $this.selectBoxIt(opts);
+            });
+        }
+    });
+</script>
+<script type="text/javascript">
+    function select_section(class_id) {
+        $.ajax({
+            url: '<?php echo base_url(); ?>index.php/admin/get_section/' + class_id,
+            success: function (response)
+            {
+                jQuery('#section_holder').html(response);
+            }
+        });
+    }
+</script>
+<script>
+function printDiv(divName) {
+     var printContents = document.getElementById(divName).innerHTML;
+     var originalContents = document.body.innerHTML;
+
+     document.body.innerHTML = printContents;
+
+     window.print();
+
+     document.body.innerHTML = originalContents;
+}
+</script>
+
+<script type="text/javascript">
+	function get_dept(branch_id) 
+	{
+	//alert(branch_id);
+	
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/admin/get_dept/' + branch_id ,
+            success: function(response)
+            {
+                jQuery('#department').html(response);
+            }
+        });
+    }
+	
+
+	
+</script>
+<script type="text/javascript">
+	function get_class(dept_id) 
+	{
+	//alert(dept_id);
+	
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/admin/get_class_students/' + dept_id ,
+            success: function(response)
+            {
+                jQuery('#class_id').html(response);
+            }
+        });
+    }
+</script>
+
+
+
+
+<script src="<?php echo base_url(); ?>assets/js/select2.js"></script>
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/select2.css" />
+<script type="text/javascript">
+$('.select2').css('width','150px').select2({allowClear:true})
+				$('#select2-multiple-style .btn').on('click', function(e){
+					var target = $(this).find('input[type=radio]');
+					var which = parseInt(target.val());
+					if(which == 2) $('.select2').addClass('tag-input-style');
+					 else $('.select2').removeClass('tag-input-style');
+				});                                    
+ </script>              

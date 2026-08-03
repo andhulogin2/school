@@ -1,0 +1,588 @@
+<body>
+        	<div class="main-content">
+				<div class="main-content-inner">
+					<!-- #section:basics/content.breadcrumbs -->
+					
+					<!-- /section:basics/content.breadcrumbs -->
+					<div class="page-content">
+						
+<?php echo form_open(base_url() . 'index.php/Transport_management/get_bus_fee_all_in_one',array('class'=>'form-horizontal form-groups-bordered validate', 'enctype'=>'multipart/form-data'));?>
+<input type="hidden" id="report_type" value="<?php echo $report_type; ?>" />					
+
+ <?php if($this->db->get_where('settings' , array('type' =>'department'))->row()->description == 'yes')
+					   {?>
+                       <?php  $role=$this->session->userdata('role');
+if($role>0)
+{?>
+		<div class="table-responsive">
+            <table id="simple-table" class="table table-striped table-bordered table-hover"  cellpadding="2">
+                <thead>
+                    <tr>
+                        <th style="width:130px"><center>Branch</center></th>
+                        <th style="width:130px"><center>Route</center></th>
+                        <th style="width:130px"><center>Bus Number</center></th>
+                        <th id="date_heading" style="width:130px"><center>Date</center></th>
+                   </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <center>
+                            <select name="branch_id" class="" style="width:100%" id="branch_id" required >
+                                <option value="">Select</option>
+                                    <?php 
+                                    foreach ($branch as $branch1)
+                                    {
+                                        ?><option value="<?php echo $branch1['branch_id'];?>"><?php echo $branch1['branch_name'];?></option>
+                                    <?php 
+                                    }
+                                    ?>
+                            </select>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                            <select name="route_master_id" style="width:100%" class="col-xs-10 col-sm-5" id="route_master_id"
+                            	<?php 
+									if($report_type=='vehicle_tax_due_report' || $report_type=='vehicle_insurance_due_report' || $report_type=='vehicle_pollution_due_report'){ echo "disabled"; }
+								?> >
+                                  
+                            </select>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                            <select name="route_register_id" style="width:100%" class="col-xs-10 col-sm-5" id="route_register_id" />
+                                  
+                            </select>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                            <input type="text" name="date_to" style="width:100%" class="col-xs-10 col-sm-5 datepick" id="date_to" />
+                            </center>
+                        </td>
+                    </tr>
+                </tbody>
+             </table>
+			 
+               <div style="text-align:center"><button type="button" class="btn btn-info" id="btnSubmit">Show Report</button></div>
+               </div>                     
+                                    
+                                    <?php }} ?>
+                                    
+                                    
+                                   <?php /*  if($role==3){?>
+                                    <div class="form-group" id="dept_role">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Bus :<font color="#FF0000">*</font></label>
+
+										<div class="col-sm-9">
+											<select name="bus_number" class="col-xs-10 col-sm-5" id="bus_number" required >
+                              					<option value="">Select</option>
+                          						<?php 
+												foreach($bus as $bus1):
+												?>
+                                                <option value="<?php echo $bus1['bus_number'] ?>"><?php echo $bus1['bus_number'] ?></option>
+                                                <?php 
+												endforeach;
+												?>
+                          					</select>
+										</div>
+									</div>
+                                    <?php } */?>
+                                    
+<?php echo form_close();?>
+                        </div>
+                        <div id="report">
+                        
+                        </div>
+                        </div></div></body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>  
+<script type="text/javascript">
+  
+$(document).ready(function(){
+	//var $j = jQuery.noConflict();
+	//$('.datepick').datepicker('destroy');
+	 
+	
+	//$('.datepick').datepicker(refresh); 
+	var report_type	=	$( "#report_type" ).val();
+	if(report_type=='vehicle_report')
+	{
+		$( "#date_to" ).prop("disabled",true);
+	}
+	if(report_type=='vehicle_tax_due_report')
+	{
+		$( "#route_master_id" ).prop("disabled",true);
+		$( "#route_register_id" ).prop("disabled",true);
+		$( "#date_heading" ).html("Tax Due Date");
+		$( "#date_heading" ).css('text-align', 'center');
+		$( "[name='date_to']" ).attr("id","tax_due_date");
+		$('#tax_due_date').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+			dateFormat: 'dd-mm-yy'
+		})
+		
+	}
+	if(report_type=='vehicle_insurance_due_report')
+	{
+		$( "#route_master_id" ).prop("disabled",true);
+		$( "#route_register_id" ).prop("disabled",true);
+		$( "#date_heading" ).html("Insurance Due Date");
+		$( "#date_heading" ).css('text-align', 'center');
+		$( "[name='date_to']" ).attr("id","insurance_due_date");
+		$('#insurance_due_date').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+			dateFormat: 'dd-mm-yy'
+		})
+		
+	}
+	if(report_type=='vehicle_pollution_due_report')
+	{
+		$( "#route_master_id" ).prop("disabled",true);
+		$( "#route_register_id" ).prop("disabled",true);
+		$( "#date_heading" ).html("Pollution Due Date");
+		$( "#date_heading" ).css('text-align', 'center');
+		$( "[name='date_to']" ).attr("id","pollution_due_date");
+		$('#pollution_due_date').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+			dateFormat: 'dd-mm-yy'
+		})
+		
+	}
+	
+	$( "#btnSubmit" ).prop("disabled",true);
+	$( "#td_btn" ).attr("title","Please select branch");
+    $( "#branch_id" ).change(function() {
+		if($( "#branch_id" ).val() != '')
+		{
+			$( "#btnSubmit" ).prop("disabled",false);
+			$( "#td_btn" ).attr("title","");
+		}
+		else
+		{
+			$( "#btnSubmit" ).prop("disabled",true);
+			$( "#td_btn" ).attr("title","Please select branch");
+		}
+		get_route();
+		get_bus();
+		get_pickup();
+		get_receipt_number();
+		get_department();
+		get_class1();
+		get_section();
+		get_student(); 
+		get_installment_by_branch();
+    });
+    $( "#route_master_id" ).change(function() {
+		get_bus_by_route();
+		get_pickup_by_route();
+		get_receipt_number_by_route();
+		get_student_by_route();
+	});
+    $( "#route_register_id" ).change(function() {
+		get_student_by_bus();
+	});
+    $( "#route_details_id" ).change(function() {
+		get_student_by_pickup();
+	});
+    $( "#department_id" ).change(function() {
+		get_class_by_department();
+		get_section_by_department();
+		get_student_by_department();
+	});
+    $( "#class_id" ).change(function() {
+		get_section_by_class();
+		get_student_by_class();
+	});
+    $( "#section_id" ).change(function() {
+		get_student_by_section();
+	});
+    $( "#btnSubmit" ).click(function() {
+		get_report();
+	});
+
+});  
+
+</script>  
+<script type="text/javascript">
+function get_route() 
+{    
+	var branch_id	=	$( "#branch_id" ).val();
+		$.ajax({
+			url: '<?php echo base_url();?>index.php/Transport_management/get_route_by_branch/' + branch_id ,
+			success: function(response)
+			{
+				jQuery('#route_master_id').html(response);
+			}
+		});
+}
+
+function get_bus() 
+{
+	var branch_id	=	$( "#branch_id" ).val();
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_bus_by_branch/' + branch_id ,
+            success: function(response)
+            {
+                jQuery('#route_register_id').html(response);
+            }
+        });
+}
+function get_pickup() 
+{
+	var branch_id	=	$( "#branch_id" ).val();
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_pickup_by_branch1/' + branch_id ,
+            success: function(response)
+            {
+                jQuery('#route_details_id').html(response);
+            }
+        });
+}
+function get_receipt_number()
+{
+	var branch_id	=	$( "#branch_id" ).val();
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_receipt_number_by_branch/' + branch_id ,
+            success: function(response)
+            {
+                jQuery('#receipt_number').html(response);
+            }
+        });
+}
+function get_department() 
+{
+	var branch_id	=	$( "#branch_id" ).val();
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_department_by_branch/' + branch_id ,
+            success: function(response)
+            {
+                jQuery('#department_id').html(response);
+            }
+        });
+}
+function get_class1() 
+{
+	var branch_id	=	$( "#branch_id" ).val();
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_class_by_branch/' + branch_id ,
+            success: function(response)
+            {
+                jQuery('#class_id').html(response);
+            }
+        });
+}
+function get_section() 
+{
+	var branch_id	=	$( "#branch_id" ).val();
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_section_by_branch/' + branch_id ,
+            success: function(response)
+            {
+                jQuery('#section_id').html(response);
+            }
+        });
+}
+function get_student() 
+{
+	var branch_id	=	$( "#branch_id" ).val();
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_student_by_branch/' + branch_id ,
+            success: function(response)
+            {
+                jQuery('#student_id').html(response);
+            }
+        });
+}
+function get_installment_by_branch()
+{
+	var branch_id	=	$( "#branch_id" ).val();
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_installment_by_branch/' + branch_id ,
+            success: function(response)
+            {
+                jQuery('#bus_fee_settings_id').html(response);
+            }
+        });
+}
+function get_bus_by_route() 
+{
+	var route_master_id	=	$( "#route_master_id" ).val();
+	if(route_master_id == '')
+	{
+		get_bus();
+	}
+	else
+	{
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_bus/' + route_master_id ,
+            success: function(response)
+            {
+                jQuery('#route_register_id').html(response);
+            }
+        });
+	}
+}
+function get_pickup_by_route() 
+{
+	var route_master_id	=	$( "#route_master_id" ).val();
+	if(route_master_id == '')
+	{
+		get_pickup();
+	}
+	else
+	{
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_pick_up/' + route_master_id ,
+            success: function(response)
+            {
+				jQuery('#route_details_id').html(response);
+            }
+        });
+	}
+}
+function get_receipt_number_by_route()
+{
+	var route_master_id	=	$( "#route_master_id" ).val();
+	if(route_master_id == '')
+	{
+		get_receipt_number();
+	}
+	else
+	{
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_receipt_number_by_route/' + route_master_id ,
+            success: function(response)
+            {
+				jQuery('#receipt_number').html(response);
+            }
+        });
+	}
+}
+function get_student_by_route()
+{
+	var route_master_id	=	$( "#route_master_id" ).val();
+	if(route_master_id == '')
+	{
+		get_student();
+	}
+	else
+	{
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_student_by_route/' + route_master_id ,
+            success: function(response)
+            {
+				jQuery('#student_id').html(response);
+            }
+        });
+	}
+}
+function get_student_by_bus()
+{
+	var route_register_id	=	$( "#route_register_id" ).val();
+	if(route_register_id == '')
+	{
+		get_student();
+	}
+	else
+	{
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_student_by_bus/' + route_register_id ,
+            success: function(response)
+            {
+				jQuery('#student_id').html(response);
+            }
+        });
+	}
+}
+function get_student_by_pickup()
+{
+	var route_details_id	=	$( "#route_details_id" ).val();
+	if(route_details_id == '')
+	{
+		get_student();
+	}
+	else
+	{
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/Transport_management/get_student_by_pickup/' + route_details_id ,
+            success: function(response)
+            {
+				jQuery('#student_id').html(response);
+            }
+        });
+	}
+}
+function get_class_by_department() 
+{
+	var department_id	=	$( "#department_id" ).val();
+	
+		if(department_id == '')
+		{
+			get_class1();
+		}
+		else
+		{
+			$.ajax({
+				url: '<?php echo base_url();?>index.php/Transport_management/get_class_by_department/' + department_id ,
+				success: function(response)
+				{
+					jQuery('#class_id').html(response);
+				}
+			});
+		}
+}
+function get_section_by_department() 
+{
+	var department_id	=	$( "#department_id" ).val();
+	
+		if(department_id == '')
+		{
+			get_section();
+		}
+		else
+		{
+			$.ajax({
+				url: '<?php echo base_url();?>index.php/Transport_management/get_section_by_department/' + department_id ,
+				success: function(response)
+				{
+					jQuery('#section_id').html(response);
+				}
+			});
+		}
+}
+function get_student_by_department() 
+{
+	var department_id	=	$( "#department_id" ).val();
+	
+		if(department_id == '')
+		{
+			get_student();
+		}
+		else
+		{
+			$.ajax({
+				url: '<?php echo base_url();?>index.php/Transport_management/get_student_by_department/' + department_id ,
+				success: function(response)
+				{
+					jQuery('#student_id').html(response);
+				}
+			});
+		}
+}
+function get_section_by_class() 
+	{
+	var class_id	=	$( "#class_id" ).val();
+	
+		if(class_id == '')
+		{
+			get_section();
+		}
+		else
+		{
+			$.ajax({
+				url: '<?php echo base_url();?>index.php/Transport_management/get_section_by_class/' + class_id ,
+				success: function(response)
+				{
+					jQuery('#section_id').html(response);
+				}
+			});
+		}
+    }
+function get_student_by_class() 
+	{
+	var class_id	=	$( "#class_id" ).val();
+	
+		if(class_id == '')
+		{
+			get_student();
+		}
+		else
+		{
+			$.ajax({
+				url: '<?php echo base_url();?>index.php/Transport_management/get_student_by_class/' + class_id ,
+				success: function(response)
+				{
+					jQuery('#student_id').html(response);
+				}
+			});
+		}
+    }
+function get_student_by_section() 
+	{
+	var section_id	=	$( "#section_id" ).val();
+	
+		if(section_id == '')
+		{
+			get_student();
+		}
+		else
+		{
+			$.ajax({
+				url: '<?php echo base_url();?>index.php/Transport_management/get_student_by_section/' + section_id ,
+				success: function(response)
+				{
+					jQuery('#student_id').html(response);
+				}
+			});
+		}
+    }
+function get_report()
+{
+	var report_type	=	$( "#report_type" ).val();
+	if(report_type=='vehicle_report')
+	{
+		var values	=	{
+						report_type:$( "#report_type" ).val(),
+						branch_id:$( "#branch_id" ).val(),
+						route_master_id:$( "#route_master_id" ).val(),
+						route_register_id:$( "#route_register_id" ).val()
+						};
+		var id_values = JSON.stringify(values);				
+	}
+	if(report_type=='vehicle_tax_due_report')
+	{
+		var values	=	{
+						report_type:$( "#report_type" ).val(),
+						branch_id:$( "#branch_id" ).val(),
+						tax_due_date:$( "#tax_due_date" ).val()
+						};
+		var id_values = JSON.stringify(values);				
+	}
+	if(report_type=='vehicle_insurance_due_report')
+	{
+		var values	=	{
+						report_type:$( "#report_type" ).val(),
+						branch_id:$( "#branch_id" ).val(),
+						insurance_due_date:$( "#insurance_due_date" ).val()
+						};
+		var id_values = JSON.stringify(values);				
+	}
+	if(report_type=='vehicle_pollution_due_report')
+	{
+		var values	=	{
+						report_type:$( "#report_type" ).val(),
+						branch_id:$( "#branch_id" ).val(),
+						pollution_due_date:$( "#pollution_due_date" ).val()
+						};
+		var id_values = JSON.stringify(values);				
+	}
+	$.ajax({
+		type: "POST",
+		url: '<?php echo base_url();?>index.php/Transport_management/get_report/'  ,
+		data: { ids : id_values },
+		success: function(response)
+		{
+			jQuery('#report').html(response);
+		}
+	});
+}
+	
+</script>

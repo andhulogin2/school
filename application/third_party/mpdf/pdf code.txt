@@ -1,0 +1,22 @@
+		
+		/*
+		generate pdf for purchase list
+	*/
+	public function pdf_purchase($id){
+
+		ob_start();
+		$html = ob_get_clean();
+		$html = utf8_encode($html);
+
+		$data['data'] = $this->Stock_management_model->getPurchase_details($id);
+	    $data['master'] = $this->Stock_management_model->getMaster($id);
+		$html = $this->load->view('stock_management/pdf_stock_purchase_details',$data,true);
+
+		include(APPPATH.'third_party/mpdf/mpdf.php');
+        $mpdf = new mPDF();
+        $mpdf->allow_charset_conversion = true;
+        $mpdf->charset_in = 'UTF-8';
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($data['data'][0]->reference_no.'pdf','I');
+	}
+		

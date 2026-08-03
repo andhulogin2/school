@@ -1,0 +1,541 @@
+<?php 
+$role=$this->session->userdata('role');
+ include_once APPPATH . 'views/main_head.php';
+ ?>
+<?php $running_year = get_running_year(); ?>
+<div class="main-content">
+				<div class="main-content-inner">
+					<!-- #section:basics/content.breadcrumbs -->
+					<div class="breadcrumbs" id="breadcrumbs">
+						<script type="text/javascript">
+							try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+						</script>
+
+						<ul class="breadcrumb">
+							<li>
+								<i class="ace-icon fa fa-home home-icon"></i>
+								<a href="#">Home</a>
+							</li>
+                           
+						</ul><!-- /.breadcrumb -->
+
+						<!-- #section:basics/content.searchbox -->
+						<div class="nav-search" id="nav-search">
+							<form class="form-search">
+								<span class="input-icon">
+									
+								</span>
+							</form>
+						</div><!-- /.nav-search -->
+
+						<!-- /section:basics/content.searchbox -->
+					</div>
+                    <div class="page-content">
+						
+                        <div class="page-header">
+							<h1>
+								Student
+								
+									<i class="ace-icon fa fa-angle-double-right"></i>
+									Upload Home Test Marks
+								
+							</h1>
+						</div>
+                        
+                         <div align="right" style="padding-right:10px"><a href="<?php echo base_url() . 'index.php/Admin/view_home_test'; ?>"><b><button class="btn-info">Back</button></b></a></div> 
+<?php echo form_open(base_url() . 'index.php/admin/create_home_test/upload_marks'); ?>
+<?php if($this->session->userdata('role')==1 || $this->session->userdata('role')==2){ ?>
+        <div class="col-md-2">
+        <div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;">Branch<font color="#FF0000">*</font></label>
+			<select name="branch" class="select2" id="branch" onChange="return get_dept(this.value)" required=""/>
+                              <option value="">Select</option>
+                              <?php $branch=$this->db->get('tbl_branch')->result_array();
+							  foreach ($branch as $branch1)
+							  {
+							  ?>
+							  <option value="<?php echo $branch1['branch_id']; ?>" 
+                                <?php if ($branch_id == $branch1['branch_id']) echo 'selected'; ?>>
+                                    <?php echo $branch1['branch_name']; ?>
+                        </option>
+                              <?php }?>
+                              
+                          </select>
+		</div>
+	</div>
+    
+    <div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;">Department<font color="#FF0000">*</font></label>
+			<select name="department" class="select2" id="department" onChange="return get_class(this.value)" required=""/>
+                              <option value="">Select</option>
+                               <option value="<?php echo $dept_id; ?>" 
+                                <?php if ($dept_id !='') echo 'selected'; ?>>
+                                    <?php echo get_dept($dept_id) ; ?>
+                        </option>
+                              
+                          </select>
+		</div>
+	</div>
+
+			<div class="col-md-2">
+				<div class="form-group">
+					<label class="control-label">Class<font color="#FF0000">*</font></label>
+					<select name="class_id" class="select2" onChange="return get_class_subject(this.value)" id="class_id" required=""/>
+                        <option value="">Select</option>
+                        <option value="<?php echo $class_id; ?>" 
+                                <?php if ($class_id !='') echo 'selected'; ?>>
+                                    <?php echo $this->db->get_where('class',array('class_id'=>$class_id))->row()->name; ; ?>
+                        </option>
+                       
+                    </select>
+				</div>
+			</div>
+            <?php } ?>
+            <?php if($this->session->userdata('role')==3)
+{?>
+<div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;">Department <font color="#FF0000">*</font></label>
+			<select name="department" class="col-xs-11 col-sm-11" id="department" onChange="return get_class(this.value)" requierd=""/>
+            <option value="">Select</option>
+                              <?php 
+							  $this->db->where('branch_id',$this->session->userdata('branch_id'));
+							  $dept=$this->db->get('tbl_department')->result_array();
+							  foreach ($dept as $dept1)
+							  {
+							  ?>
+							  <option value="<?php echo $dept1['dept_id']; ?>" 
+                                <?php if ($dept_id==$dept1['dept_id']) echo 'selected'; ?>>
+                                    <?php echo  $dept1['dept_name'] ; ?>
+                        </option>
+                        <?php
+                        }?>
+                             
+                             
+                              
+                          </select>
+		</div>
+	</div>
+<div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;">Class <font color="#FF0000">*</font></label>
+			<select name="class_id" class="select2" onChange="return get_class_subject(this.value)" id="class_id" required=""/>
+				<option value="">Select</option>
+                <option value="<?php echo $class_id; ?>" 
+                                <?php if ($class_id !='') echo 'selected'; ?>>
+                                    <?php echo $this->db->get_where('class',array('class_id'=>$class_id))->row()->name; ; ?>
+                        </option>
+				
+			</select>
+		</div>
+	</div>
+
+<?php }?>
+
+<?php if($this->session->userdata('role')==4 || $this->session->userdata('role')==12)
+{?>
+<div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;">Class<font color="#FF0000">*</font></label>
+			<select name="class_id" class="select2" onChange="return get_class_subject(this.value)" id="class_id" required=""/ >
+				<option value="">Select</option>
+                <?php 
+				                     $academic_year = get_running_year();
+									 $branch	=$this->session->userdata('branch_id');
+									 $dept	=	$this->session->userdata('dept_id');
+									 $this->db->where('branch_id',$branch);
+									 $this->db->where('dept_id',$dept);
+									 $this->db->where('academic_year',$academic_year);
+									 $class 	=	$this->db->get('class')->result_array();
+									 foreach($class as $data){?>
+                                      <option value="<?php echo $data['class_id']?>"><?php echo $data['name']?></option>
+                                       <?php } ?>
+				
+			</select>
+		</div>
+	</div>
+    <?php }?>
+
+    <div id="subject_holder">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="control-label" style="margin-bottom: 5px;">Section <font color="#FF0000">*</font></label>
+                <select name="section_id" id="section_id" class="select2"required=""/ > 
+                    <?php
+                    $yr=get_running_year();
+                    $sections = $this->db->get_where('section', array(
+                                'class_id' => $class_id,
+							'academic_year' => $yr	
+                            ))->result_array();
+                    foreach ($sections as $row):
+                        ?>
+                        <option value="<?php echo $row['section_id']; ?>" 
+                                <?php if ($section_id == $row['section_id']) echo 'selected'; ?>>
+                                    <?php echo $row['name']; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+       <div class="col-md-2">
+			<div class="form-group">
+			<label class="control-label" style="margin-bottom: 5px;">Exam<font color="#FF0000">*</font></label>
+				<input type="text" name="exam" id="exam" value="<?php echo $this->db->get_where('tbl_home_test',array('home_test_id'=>$exam_id))->row()->exam_name; ?>" required="" />
+			</div>
+    </div>
+
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="control-label" style="margin-bottom: 5px;">Subject <font color="#FF0000">*</font></label>
+                <select name="subject_id" id="subject_id" class="select2" required=""/>
+                    <?php
+                    $yr=get_running_year();
+                    $subjects = $this->db->get_where('subject', array(
+                                'class_id' => $class_id, 'year' => $yr
+                            ))->result_array();
+                    foreach ($subjects as $row):
+                        ?>
+                        <option value="<?php echo $row['subject_id']; ?>"
+                                <?php if ($subject_id == $row['subject_id']) echo 'selected'; ?>>
+                                    <?php echo $row['name']; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+        
+        
+         <div class="col-md-2">
+	   <div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;">Date</label>
+			<input type="text" class="form-control mydatepicker" name="date" value="<?php echo date("d-m-Y",strtotime($date));?>"/>
+		</div>
+	</div>
+        
+       
+        <div class="col-md-2" style="margin-top: 20px;">
+			<center>
+				<button type="submit" class="btn btn-info" disabled="disabled">Submit</button>
+			</center>
+		</div>
+
+    </div>
+</div>
+
+<hr />
+<?php echo form_close(); ?>
+
+<div class="row">
+                
+    
+                           <?php echo form_open(base_url() . 'index.php/admin/create_home_test/update_marks'); ?>
+
+            
+               <input type="hidden" class="form-control selectboxit" name="comment" id="comment" value="">
+               <input type="hidden"  name="class_id" id="class_id" value="<?php echo $class_id; ?>">
+               <input type="hidden"  name="section_id" id="section_id" value="<?php echo $section_id; ?>">
+               <input type="hidden"  name="exam_id" id="exam_id" value="<?php echo $exam_id; ?>">
+               <input type="hidden"  name="subject_id" id="subject_id" value="<?php echo $subject_id; ?>">
+               <input type="hidden"  name="branch_id" id="branch_id" value="<?php echo $branch_id; ?>">
+               <input type="hidden"  name="dept_id" id="dept_id" value="<?php echo $dept_id; ?>">
+               
+                
+                <table class="table table-bordered sortable">
+                    <thead>
+                        
+                        <tr>
+                           <th style="text-align: center;" class="table-header"> Roll No.&nbsp;&nbsp; <font color="white"> <i class="fa fa-sort" aria-hidden="true" title="Sort Roll Number"></i></font></th>
+
+                            <th style="text-align: center;" class="table-header">Student &nbsp;&nbsp; <font color="white"> <i class="fa fa-sort" aria-hidden="true" title="Sort Name"></font></th>
+                            <th style="text-align: center;" class="table-header">Marks Obtained</th>
+                            <th style="text-align: center;" class="table-header"><input type="text" style="width:60px;height:30px" placeholder="Out Of" id="total_mark_obtt" class="form-control"></th>
+
+                            <?php /* ?>	<th style="text-align: center;"><?php echo $this->db->get_where('subject' , array('subject_id' => $subject_id))->row()->la3;?></th>
+                              <th style="text-align: center;"><?php echo $this->db->get_where('subject' , array('subject_id' => $subject_id))->row()->la4;?></th>
+                              <th style="text-align: center;"><?php echo $this->db->get_where('subject' , array('subject_id' => $subject_id))->row()->la5;?></th>
+                              <th style="text-align: center;"><?php echo $this->db->get_where('subject' , array('subject_id' => $subject_id))->row()->la6;?></th>
+                              <th style="text-align: center;"><?php echo $this->db->get_where('subject' , array('subject_id' => $subject_id))->row()->la7;?></th>
+                              <th><?php echo $this->db->get_where('subject' , array('subject_id' => $subject_id))->row()->la8;?></th>
+                              <th style="text-align: center;"><?php echo $this->db->get_where('subject' , array('subject_id' => $subject_id))->row()->la9;?></th>
+                              <th style="text-align: center;"><?php echo $this->db->get_where('subject' , array('subject_id' => $subject_id))->row()->final;?></th><?php */ ?>
+                          <th style="text-align: center;" class="table-header">Grade</th>
+
+                            <th style="text-align: center;" class="table-header">Position</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $count = 1;
+						$running_year=get_running_year();
+                        $count = 1;
+                       $this->db->select('s.name,m.mark_obtained,m.mark_total,m.mark_id,e.roll');
+					   $this->db->from('tbl_home_test_mark m');
+			            $this->db->join('student s','s.student_id=m.student_id','LEFT');
+			         $this->db->join('enroll e','e.student_id=m.student_id','LEFT');
+					 $this->crud_model->check_student_status();
+						$this->db->where('e.year',$running_year);
+						$this->db->where('m.class_id',$class_id);
+						 $this->db->where('m.section_id',$section_id);
+						   $this->db->where('m.home_test_id',$exam_id);
+						    $this->db->where('m.subject_id',$subject_id);
+							 $this->db->order_by('s.name', 'asc');
+						$marks_of_students=$this->db->get()->result_array();
+
+                        foreach ($marks_of_students as $row):
+                            ?>
+                            <tr>
+                                  <td style="text-align: center;">
+                                        
+                                   <?php echo $row['roll']; ?>
+                                </td>
+                                <td style="text-align: center;">
+                                        
+                                    <?php echo $row['name']; ?>
+                                </td>
+                                <td> 
+                                <?php $g=$row['mark_id'];?>
+                                    <input type="text" class="form-control" name="marks_obtained_<?php echo $row['mark_id']; ?>" tabindex="<?php echo $count; ?>"
+                                           style="width:60px;height:30px" value="<?php echo $row['mark_obtained']; ?>" onchange="return get_grade(this.value)">	
+                                          
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control total_markk" name="mark_total_<?php echo $row['mark_id']; ?>"
+                                           style="width:60px;height:30px" value="<?php echo $row['mark_total']; ?>">	
+                                </td>
+                                <?php /*?> <?php
+                                                    $average = (($row['mark_obtained'] / $row['mark_total']) * 100);
+                                                    echo number_format($average, 2, '.', '');
+                                                    ?>%
+                                          <?php 
+										    if($average>30)
+											{
+											echo "pass";
+											}
+											else
+											{
+											 echo "failed";
+											 }
+											?>   <?php */?>       
+                         
+                         
+                                       
+                                                 
+                                           
+                                           
+                                                    
+                                                    
+                                <td>
+                                    <input type="text" class="form-control" name="grade"
+                                           style="width:60px;height:30px" value="<?php
+                                                    if($row['mark_total']==0)
+													{
+													  echo "-";
+													  }
+													  else
+													  {
+													
+													$average = (($row['mark_obtained'] / $row['mark_total']) * 100);
+                                                   //echo number_format($average, 2, '.', '');
+													$p=$this->db->get('grade')->result_array();
+													foreach($p as $res){
+													
+												  //echo  $res['minimum_range'];
+													if($average >=$res['minimum_range'] and $average <=$res['maximum_range'])
+													{
+													  echo $res['grade'];
+													
+													
+													
+                                                    ?>">
+                                                    <input type="hidden" name="grade_value_<?php echo $row['mark_id'];?>" value="<?php echo $res['grade'];?>" />	
+                                                   <input type="hidden" name="position_value_<?php echo $row['mark_id'];?>" value="<?php echo $res['position'];?>" />	
+
+                                </td>
+<td>
+                                     <input type="text" class="form-control" style="width:150px;height:30px" name="position_<?php echo $row['mark_id']; ?>"
+                                           value="<?php echo $res['position'];
+											
+
+
+											
+											 
+											 }
+											 }
+											 }
+											?>   
+                                         
+                         ">
+
+                             </td>
+                             
+                            </tr>
+                        <?php endforeach; ?>
+                        
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-md-3" style="text-align:right">
+                        <label class="control-label" >Remark<font color="#FF0000">*</font></label>
+                    </div>
+                    <div class="col-md-2" style="text-align:left">
+                        <input type="text" class=" selectboxit " name="remarks" id="remarks" value="<?php $yr=get_running_year(); echo $this->db->get_where('tbl_home_test_mark' , array(
+					'class_id' => $class_id , 'section_id' => $section_id , 'home_test_id' => $exam_id , 'subject_id' => $subject_id , 'year' => $yr))->row()->remarks
+				;?>" required=""/>
+                    </div>
+                    <div class="col-md-1" style="text-align:right">
+                        <label class="control-label">Update Date</label>
+                    </div>
+                    <div class="col-md-3" style="text-align:left">
+                        <input type="text" class="mydatepicker"  name="date" id="date" value="<?php echo date('d-m-Y',strtotime($date)); ?>">
+                    </div>
+                    <div class="col-md-12"></div> 
+                </div>
+                <div class="form-group">
+               
+		 <div class="col-md-12" style="margin-top:5px;">
+               <center>
+                    <button type="submit" class="btn btn-info" id="submit_button">
+                        <i class="fa fa-check"></i> Upload
+                    </button>
+                </center>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+     
+ <?php echo form_close(); ?>
+ </div></div></div>
+ <?php include_once APPPATH . 'views/footer.php'; ?>
+
+<script type="text/javascript">
+    function get_class_subject(class_id) {
+        $.ajax({
+            url: '<?php echo base_url(); ?>index.php/admin/class_get_subject/' + class_id,
+            success: function (response)
+            {
+                jQuery('#subject_holder').html(response);
+            }
+        });
+    }
+
+</script>
+<script type="text/javascript">
+    function get_grade(g)
+  {
+    	$.ajax({
+            url: '<?php echo base_url();?>index.php/admin/get_grade/' + g ,
+            success: function(response)
+            {
+                jQuery('#grade').html(response);
+            }
+        });
+    }
+</script>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#total_mark_obt').change(function () {
+            var tot_mark = $(this).val();
+            var selected_seats = $("body .total_mark");
+            $.each(selected_seats, function (key, value) {
+                $(this).val(tot_mark);
+            });
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#total_mark_obtt').change(function () {
+            var tot_mark = $(this).val();
+            var selected_seats = $("body .total_markk");
+            $.each(selected_seats, function (key, value) {
+                $(this).val(tot_mark);
+            });
+        });
+    });
+</script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+$("#remarks").keyup(function () {
+var a = $("#remarks").val();
+var c= a ;
+$("#comment").val(c);
+});
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('value') == 'alphabet') {
+	      
+            $('#alphabet_list').show(); 
+			$('#roll_list').hide();           
+       }
+
+       if($(this).attr('value') == 'roll') {
+	  
+            $('#alphabet_list').hide(); 
+			$('#roll_list').show();   
+       }
+	  //  if($(this).attr('value') == 'roll_sec') {
+//	  //alert("roll_sec_list");
+//            $('#alphabet_sec_list').hide(); 
+//			$('#roll_sec_list').show();   
+//       }
+//	    if($(this).attr('value') == 'alphabet_sec') {
+//	 // alert("alphabet_sec_list");
+//            $('#roll_sec_list').hide(); 
+//			$('#alphabet_sec_list').show();   
+//       }
+	  ///////////////////////////////////////////////////
+	  
+	   <?php $sections = $this->db->get_where('section' , array('class_id' => $class_id))->result_array();
+         foreach ($sections as $row){ ?> 
+		     if($(this).attr('value') == '<?php echo $row['section_id'];?>') {
+            	if (this.checked) {
+			
+                 $('#<?php echo $row['section_id']."roll_list";?>').show(); 
+			     $('#<?php echo $row['name'];?>').hide(); 
+			    } 
+              }
+		   if($(this).attr('value') == '<?php echo $row['name'];?>') {
+	           if (this.checked) {
+		
+			    $('#<?php echo $row['name'];?>').show();  
+                $('#<?php echo $row['section_id']."roll_list";?>').hide(); 
+             }
+			 
+	      }
+	 <?php  } ?>
+	
+	  ////////////////////////////////////////////////////
+   });
+});
+</script>
+<script src="<?php echo base_url(). 'assets/js/sorttable.js'; ?>"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+<?php
+if ($action=="success")
+{
+echo "<script>toastr.success('". "Updated Successfully...', 'Updated', {timeOut: 5000})</script>";
+}
+
+?>
+
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>                                                           
+  <script type="text/javascript">
+    $(document).ready(function () {
+        $('.mydatepicker').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+			dateFormat: 'dd-mm-yy'
+        })
+		
+	
+    });
+	</script>  

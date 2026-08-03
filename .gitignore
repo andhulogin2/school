@@ -1,0 +1,46 @@
+# CodeIgniter specific
+application/logs/*
+!application/logs/index.html
+
+application/cache/*
+!application/cache/index.html
+
+# CI Session files
+ci_session/*
+
+# Environment / Config sensitive files
+application/config/database.php
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Editor directories and files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# PHP error log
+error_log
+*.log
+
+# Backup files
+*.bak
+*.backup
+*~ 
+
+# Node modules (if any)
+node_modules/
+
+# Well-known (auto-generated)
+.well-known/
