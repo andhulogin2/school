@@ -50,7 +50,7 @@ $role=$this->session->userdata('role');
                      <?php echo form_open_multipart('Admin/add_student', array('class' => 'form-horizontal','id'=>"myform"));?>
                      
                                     
-                                    <?php if($this->db->get_where('settings' , array('type' =>'department'))->row()->description == 'yes')
+                                    <?php if(get_setting('department') == 'yes')
 					   { 
 					   if($this->session->userdata('role')==1  || $this->session->userdata('role')==2){?>
                                     <div class="form-group">
@@ -116,7 +116,7 @@ $role=$this->session->userdata('role');
 										<div class="col-sm-9">
 											<input type="text" id="admission_no" placeholder="Admission number" class="col-xs-10 col-sm-5" name="admission_no" onChange="admission_no_chk(this.value)" 
 											value="<?php
-											if($this->db->get_where("settings",array('type'=>'auto_inc_adm_no'))->row()->description=="yes")
+											if(get_setting('auto_inc_adm_no') == 'yes')
 											{
 											    $readonly="readonly";
 											    $this->db->select('MAX(cast(admission_number as unsigned))+1 as admission_number');

@@ -568,11 +568,20 @@ function convert_number_to_words($number='') {
 }
 }
 
-
-
-
-
+if ( ! function_exists('get_setting'))
+{
+	function get_setting($type = '', $default = '')
+	{
+		$CI =& get_instance();
+		$CI->load->database();
+		$query = $CI->db->get_where('settings', array('type' => $type));
+		if ($query->num_rows() > 0) {
+			return $query->row()->description;
+		}
+		return $default;
+	}
+}
 
 // ------------------------------------------------------------------------
-/* End of file language_helper.php */
-/* Location: ./system/helpers/language_helper.php */
+/* End of file school_management_helper.php */
+/* Location: ./application/helpers/school_management_helper.php */

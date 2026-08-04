@@ -95,25 +95,19 @@ class Hourly_attendance extends CI_Controller
 			
 			if((count($attendance)>=1)&&($check_checked[$i]==1))
 			{
-			?> <script>
-			alert("data exist on day" +" <?php echo date('d-m-Y',strtotime($day)); ?>"+".That can't be updated");
-            </script> <?php
+				$this->session->set_flashdata('error_message', "Data exists on day " . date('d-m-Y', strtotime($day)) . ". That cannot be updated.");
 			}
-			
 			else
 			{
-			 $this->Hourly_attendance_model->delete_holidays($day,$academic_year,$branch_id);
-		
+				$this->Hourly_attendance_model->delete_holidays($day,$academic_year,$branch_id);
 				if( $check_checked[$i]==1)
 				{
-				$data['reason_for_holiday ']=$reason[$i];
-				$this->Hourly_attendance_model->insert_holidays($data);
-				}// end of checked if
+					$data['reason_for_holiday ']=$reason[$i];
+					$this->Hourly_attendance_model->insert_holidays($data);
+				}
 			}
-		}// end of for loop
-	//$this->load->view('admin/hourly_attendance/set_working_days');
-	
-	 redirect(base_url() . 'index.php/hourly_attendance/set_working_days' ,'refresh');
+		}
+		redirect(base_url() . 'index.php/hourly_attendance/set_working_days' ,'refresh');
 	}	
 	
 	
