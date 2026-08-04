@@ -582,50 +582,51 @@ if($users->num_rows()==0){
     }
 	function get_student_area_roll($running_year,$class_id,$order,$migrated='') {
 		
-        $this->db->select('e.student_id,e.roll,s.name as name');
-					 $this->db->from('enroll e');
-					 $this->db->join('student s', 'e.student_id = s.student_id', 'left');
-					 if($order==1)
-					 {
-                     $this->db->order_by('s.name', 'asc');
-					 }
-					 elseif($order==2)
-					 {
-                     $this->db->order_by('s.name', 'desc');
-					 }	
-					 elseif($order==3)
-					 {
-					 
-                    $this->db->order_by('e.roll', 'asc');
-					 }	
-					 elseif($order==4)
-					 {
-					
-                    $this->db->order_by('e.roll', 'desc');
-					 }	
-					  elseif($order==5)
-					 {
-                     $this->db->order_by('s.admission_number', 'asc');
-					 }	
-					 elseif($order==6)
-					 {
-                     $this->db->order_by('s.admission_number', 'desc');
-					 }			
-					  elseif($order==7)
-					 {
-                     $this->db->order_by('s.sex', 'asc');
-					 }		
-					
-                     $this->db->where('e.class_id',$class_id);
-					 $this->db->where('e.year',$running_year);
-					 $this->db->where('e.student_id >', 0);
-					 if($migrated=='non_migrated')
-					 {
-					 	$this->db->where('e.is_migrated!=','Y');
-					 }
- 					 $this->check_student_status();
-                     $query = $this->db->get();
-					return $query->result_array();
+        $this->db->select('s.student_id, s.name, s.admission_number, s.phone1, s.email, s.sex, e.roll, e.class_id, e.section_id, e.year');
+		$this->db->from('student s');
+		$this->db->join('enroll e', 'e.student_id = s.student_id', 'inner');
+		if($order==1)
+		{
+             $this->db->order_by('s.name', 'asc');
+		}
+		elseif($order==2)
+		{
+             $this->db->order_by('s.name', 'desc');
+		}	
+		elseif($order==3)
+		{
+            $this->db->order_by('e.roll', 'asc');
+		}	
+		elseif($order==4)
+		{
+            $this->db->order_by('e.roll', 'desc');
+		}	
+		elseif($order==5)
+		{
+             $this->db->order_by('s.admission_number', 'asc');
+		}	
+		elseif($order==6)
+		{
+             $this->db->order_by('s.admission_number', 'desc');
+		}			
+		elseif($order==7)
+		{
+             $this->db->order_by('s.sex', 'asc');
+		}		
+		
+        if ($class_id != '' && $class_id != '0' && $class_id > 0) {
+            $this->db->where('e.class_id', $class_id);
+        }
+		$this->db->where('e.year',$running_year);
+		$this->db->where('s.student_id >', 0);
+		if($migrated=='non_migrated')
+		{
+			$this->db->where('e.is_migrated!=','Y');
+		}
+		$this->db->where('s.student_status_id', 0);
+		$this->db->group_by('s.student_id');
+        $query = $this->db->get();
+		return $query->result_array();
     }
 	
 	 function additional_message_content() {
@@ -3407,10 +3408,13 @@ function student_inactive($student_id)
 		}
 		
 	}
-	function get_stud_count_in_section($section_id)
+	function get_stud_count_in_section($section_id, $running_year = '')
 	{
 		$this->db->join('student b','b.student_id=a.student_id and b.student_status_id=0');
 		$this->db->where('a.section_id',$section_id);
+		if (!empty($running_year)) {
+			$this->db->where('a.year', $running_year);
+		}
 		$this->db->from('enroll a');
 		$stud_count	=	$this->db->get()->num_rows();
 		return $stud_count;

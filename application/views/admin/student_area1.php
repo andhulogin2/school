@@ -4,8 +4,8 @@ $role=$this->session->userdata('role');
 ?>
 <?php 
 $running_year = get_running_year();
-$cls=$this->db->get_where('class',array('class_id'=>$class_id,'academic_year'=>$running_year))->row()->name;
-
+$cls_row = ($class_id > 0) ? $this->db->get_where('class',array('class_id'=>$class_id,'academic_year'=>$running_year))->row() : NULL;
+$cls = ($cls_row) ? $cls_row->name : 'All Classes';
 ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -119,11 +119,14 @@ $cls=$this->db->get_where('class',array('class_id'=>$class_id,'academic_year'=>$
               <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="true"><span class="visible-xs"><i class="ti-home"></i></span><span class="hidden-xs">All Students</span></a></li>
                <?php 
 			   $this->db->order_by('name','ASC');
-			   $query = $this->db->get_where('section' , array('class_id' => $class_id,'academic_year' => $running_year)); 
+			   if ($class_id > 0) {
+			       $this->db->where('class_id', $class_id);
+			   }
+			   $query = $this->db->get_where('section' , array('academic_year' => $running_year)); 
                 if ($query->num_rows() > 0):
                 $sections = $query->result_array();
                 foreach ($sections as $row2):
-					$stud_count	=	$this->crud_model->get_stud_count_in_section($row2['section_id']);
+					$stud_count	=	$this->crud_model->get_stud_count_in_section($row2['section_id'], $running_year);
 				?>
               <li role="presentation" class=""><a href="#<?php echo $row2['section_id'];?>" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="false"><span class="visible-xs"><i class="ti-user"></i></span> <span class="hidden-xs">Section <?php echo $row2['name'];?>(<?php echo $stud_count; ?>)</span></a></li><?php endforeach;?>
         <?php endif;?>
@@ -160,37 +163,46 @@ $cls=$this->db->get_where('class',array('class_id'=>$class_id,'academic_year'=>$
              		
       
  	<?php	  
-		
 	 $students = $this->crud_model->get_student_area_roll($running_year,$class_id,$order,$migrated);
-					  
-            foreach($students as $row):?> 
-                <div class="col-md-4 col-sm-4" style="height:200px;">
-            <div class="white-box"> 
-                <div class="row">
-                 <br /> <br />
-                    <div class="col-md-4 col-sm-4 text-center"><a href="<?php echo base_url();?>index.php/admin/student_portal/<?php echo $row['student_id'];?>/<?php echo $class_id;?>"><img src="<?php echo $this->crud_model->get_image_url('student',$row['student_id']);?>" alt="user" class="img-circle img-responsive" height="40px" width="80px"></a></div>
-                    <div class="col-md-8 col-sm-8">
-                      <h3 class="box-title m-b-0"><a href="<?php echo base_url();?>index.php/admin/student_portal/<?php echo $row['student_id'];?>/<?php echo $class_id;?>">
-					  
-					<?php 
-		echo $row['name'];
-		?></a></h3>
-                      <small><?php echo $row['roll'];?></small>
+	 if (!empty($students)) {
+         foreach($students as $row):?> 
+             <div class="col-md-4 col-sm-4" style="height:200px;">
+                <div class="white-box"> 
+                    <div class="row">
+                     <br /> <br />
+                        <div class="col-md-4 col-sm-4 text-center"><a href="<?php echo base_url();?>index.php/admin/student_portal/<?php echo $row['student_id'];?>/<?php echo $class_id;?>"><img src="<?php echo $this->crud_model->get_image_url('student',$row['student_id']);?>" alt="user" class="img-circle img-responsive" height="40px" width="80px"></a></div>
+                        <div class="col-md-8 col-sm-8">
+                          <h3 class="box-title m-b-0"><a href="<?php echo base_url();?>index.php/admin/student_portal/<?php echo $row['student_id'];?>/<?php echo $class_id;?>">
+                          
+                        <?php 
+            echo $row['name'];
+            ?></a></h3>
+                          <small><?php echo $row['roll'];?></small>
+                        </div>
                     </div>
-                </div>
-            </div>  
-          </div>
-                 <?php endforeach;?>
+                </div>  
+              </div>
+         <?php endforeach;
+     } else { ?>
+         <div class="col-md-12 alert alert-info text-center" style="margin-top: 20px;">
+             <h4>No Students Found</h4>
+             <p>No active student records found for the selected criteria.</p>
+         </div>
+     <?php } ?>
                  
                  </div>
                   <div class="clearfix"></div>
               </div>
               
 
-              <?php $query = $this->db->get_where('section' , array('class_id' => $class_id,'academic_year' => $running_year));
-                if ($query->num_rows() > 0){
-                $sections = $query->result_array();
-                foreach ($sections as $row){ ?>
+               <?php 
+               if ($class_id > 0) {
+                   $this->db->where('class_id', $class_id);
+               }
+               $query = $this->db->get_where('section' , array('academic_year' => $running_year));
+                 if ($query->num_rows() > 0){
+                 $sections = $query->result_array();
+                 foreach ($sections as $row){ ?>
                 
                 <div role="tabpanel" class="tab-pane fade" id="<?php echo $row['section_id'];?>">
  
@@ -289,7 +301,9 @@ $cls=$this->db->get_where('class',array('class_id'=>$class_id,'academic_year'=>$
 					 	$this->db->where('e.is_migrated!=','Y');
 					 }
 					 $this->db->where('e.section_id',$row['section_id']);
-                     $this->db->where('e.class_id',$class_id);
+                     if ($class_id > 0) {
+                         $this->db->where('e.class_id',$class_id);
+                     }
 					 $this->db->where('e.year',$running_year);
 					 
 					 $this->crud_model->check_student_status();

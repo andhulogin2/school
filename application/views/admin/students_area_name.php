@@ -67,7 +67,9 @@
 					 }		
 						
 					 $this->db->where('e.section_id',$section);
-                     $this->db->where('e.class_id',$class_id);
+                     if ($class_id > 0) {
+                         $this->db->where('e.class_id',$class_id);
+                     }
 					 $this->db->where('e.year',$running_year);
 					 
 					 $this->crud_model->check_student_status();

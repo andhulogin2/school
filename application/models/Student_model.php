@@ -188,4 +188,47 @@ class Student_model extends CI_Model {
         $this->db->trans_complete();
         return $this->db->trans_status();
     }
+
+    /**
+     * Get student roll list for student area with flexible class filter and ordering
+     *
+     * @param string $running_year
+     * @param int $class_id
+     * @param int $order
+     * @param string $migrated
+     * @return array
+     */
+    public function get_student_area_roll($running_year, $class_id = 0, $order = 0, $migrated = '') {
+        $this->db->select('e.student_id, e.roll, s.name as name');
+        $this->db->from('enroll e');
+        $this->db->join('student s', 'e.student_id = s.student_id', 'left');
+
+        if ($order == 1) {
+            $this->db->order_by('s.name', 'asc');
+        } elseif ($order == 2) {
+            $this->db->order_by('s.name', 'desc');
+        } elseif ($order == 3) {
+            $this->db->order_by('e.roll', 'asc');
+        } elseif ($order == 4) {
+            $this->db->order_by('e.roll', 'desc');
+        } elseif ($order == 5) {
+            $this->db->order_by('s.admission_number', 'asc');
+        } elseif ($order == 6) {
+            $this->db->order_by('s.admission_number', 'desc');
+        } elseif ($order == 7) {
+            $this->db->order_by('s.sex', 'asc');
+        }
+
+        if ($class_id != '' && $class_id != '0' && $class_id > 0) {
+            $this->db->where('e.class_id', $class_id);
+        }
+        $this->db->where('e.year', $running_year);
+        $this->db->where('e.student_id >', 0);
+        if ($migrated == 'non_migrated') {
+            $this->db->where('e.is_migrated !=', 'Y');
+        }
+        $this->db->where('s.student_status_id', 0);
+
+        return $this->db->get()->result_array();
+    }
 }
