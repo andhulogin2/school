@@ -6993,7 +6993,7 @@ $data2['academic_year']         = $running_year;
 	if($branch && $dept)
 	{
 	$this->db->where('branch_id',$branch);
-	$this->db->where('dept_id',$running_year);
+	$this->db->where('dept_id',$dept);
 	
 	}
 	$this->db->where('academic_year',$running_year);

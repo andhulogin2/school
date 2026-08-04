@@ -74,8 +74,12 @@ $running_year = get_running_year();
 								<div class="row">
                                 <div class="col-md-offset-5"> <label><b><font size="+1"><?php echo "Branch : ".$row1['branch_name']?></font></b></label></div>
  						<div class="col-sm-12 infobox-container" >
-                                        <?php  foreach($class as $row){
-											  if($row['branch_id']==$row1['branch_id']) { ?>  
+                                        <?php  
+                                        $has_classes_in_branch = false;
+                                        foreach($class as $row){
+											  if($row['branch_id']==$row1['branch_id']) { 
+                                                  $has_classes_in_branch = true;
+                                                  ?>  
 										<div class="infobox infobox-red" style="height:120px;" >
 											<div class="infobox-icon">
 												<i class="ace-icon fa fa-graduation-cap"></i>
@@ -101,7 +105,12 @@ $this->db->join('student s','s.student_id=enroll.student_id','LEFT');
 </b></div>
 											</div>
 										</div>
-  <?php } }?>
+  <?php } }
+  if (!$has_classes_in_branch) { ?>
+      <div class="col-sm-12 text-center text-muted" style="padding-bottom: 15px;">
+          <small><i>No classes registered for this branch in <?php echo $running_year; ?></i></small>
+      </div>
+  <?php } ?>
 										
 
 </div></div>
