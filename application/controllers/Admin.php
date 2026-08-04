@@ -435,6 +435,24 @@ class Admin extends CI_Controller {
 			$branch_id	=	$this->input->post('branch');
 			$dept_id	=	$this->input->post('department');
 		}
+
+		// Validate academic hierarchy selection
+		$class_id_post = $this->input->post('class_id');
+		if (!empty($class_id_post)) {
+			$this->db->where('class_id', $class_id_post);
+			if (!empty($branch_id)) {
+				$this->db->where('branch_id', $branch_id);
+			}
+			$this->db->where('academic_year', $running_year);
+			$valid_class = $this->db->get('class')->num_rows();
+
+			if ($valid_class == 0) {
+				$this->session->set_flashdata('error_message', get_phrase('invalid_class_selected'));
+				redirect(base_url() . 'index.php/admin/student_add', 'refresh');
+				return;
+			}
+		}
+
 		$data_user['branch_id']			=	$branch_id;
 		$data_user['dept_id']			=	$dept_id;
 		$data_user['username']			=	$this->input->post('phone1');
