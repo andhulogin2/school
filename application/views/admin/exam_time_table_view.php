@@ -150,14 +150,15 @@
 			}
 		}
 		</script>
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script type="text/javascript">
 $(document).ready(function () {
+if ($.fn.datepicker) {
 $('.mydatepicker').datepicker({
 autoclose: true,
 todayHighlight: true,
 dateFormat: 'dd/mm/yy'
-})
+});
+}
 });
 </script>

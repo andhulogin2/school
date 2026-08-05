@@ -120,6 +120,7 @@
 				{ label: "other",  data: 10, color: "#FEE074"}
 			  ]
 			  function drawPieChart(placeholder, data, position) {
+			 	  if (placeholder && placeholder.length > 0 && placeholder.width() > 0 && placeholder.height() > 0) {
 			 	  $.plot(placeholder, data, {
 					series: {
 						pie: {
@@ -147,8 +148,11 @@
 						clickable: true
 					}
 				 })
+				  }
 			 }
-			 drawPieChart(placeholder, data);
+			 if (placeholder && placeholder.length > 0 && placeholder.width() > 0 && placeholder.height() > 0) {
+			 	drawPieChart(placeholder, data);
+			 }
 			
 			 /**
 			 we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
