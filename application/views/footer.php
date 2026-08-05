@@ -205,7 +205,9 @@
 				}
 				
 			
-				var sales_charts = $('#sales-charts').css({'width':'100%' , 'height':'220px'});
+				var sales_charts = $('#sales-charts');
+				if (sales_charts.length > 0 && sales_charts.width() > 0 && sales_charts.height() > 0) {
+				sales_charts.css({'width':'100%' , 'height':'220px'});
 				$.plot("#sales-charts", [
 					{ label: "Domains", data: d1 },
 					{ label: "Hosting", data: d2 },
@@ -232,6 +234,7 @@
 						borderColor:'#555'
 					}
 				});
+				}
 			
 			
 				$('#recent-box [data-rel="tooltip"]').tooltip({placement: tooltip_placement});
