@@ -280,14 +280,3 @@ endif;
 	
 </script>
 
-<script src="<?php echo base_url(); ?>assets/js/select2.js"></script>
-<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/select2.css" />
-<script type="text/javascript">
-$('.select2').css('width','350px').select2({allowClear:true})
-				$('#select2-multiple-style .btn').on('click', function(e){
-					var target = $(this).find('input[type=radio]');
-					var which = parseInt(target.val());
-					if(which == 2) $('.select2').addClass('tag-input-style');
-					 else $('.select2').removeClass('tag-input-style');
-				});                                    
- </script>              
