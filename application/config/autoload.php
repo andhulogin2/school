@@ -89,7 +89,7 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-//$autoload['helper'] = array('url');
+$autoload['helper'] = array('url', 'file', 'form', 'security', 'string', 'inflector', 'directory', 'download', 'multi_language', 'fee_management', 'school_management', 'hourly_attendance');
 
 /*
 | -------------------------------------------------------------------
@@ -134,4 +134,3 @@ $autoload['language'] = array();
 */
 $autoload['model'] = array('crud_model','Fee_management_model','enquiry_model','Hourly_attendance_model','Library_Model','Stock_management_model','Transport_management_model');
 //$autoload['model'] = array('Fee_management_model');
-$autoload['helper'] = array('url','file','form','security','string','inflector','directory','download','multi_language','fee_management','school_management','hourly_attendance');
