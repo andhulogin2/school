@@ -1813,11 +1813,15 @@ date_default_timezone_set("Asia/Kolkata");
 			{
 				$data['dept_id'] = $this->input->post('department');
 			}
-			$data['year']    = get_running_year();
 			if (!empty($exam_id)) {
 				$this->db->where('exam_id', $exam_id);
 				$this->db->update('exam', $data);
-				$this->session->set_flashdata('flash_message', 'Exam updated successfully.');
+				$db_err = $this->db->error();
+				if (!empty($db_err['code']) && $db_err['code'] != 0) {
+					$this->session->set_flashdata('error_message', 'Database Error: ' . $db_err['message']);
+				} else {
+					$this->session->set_flashdata('flash_message', 'Exam updated successfully.');
+				}
 			}
 			redirect('admin/view_exam');
 		} 

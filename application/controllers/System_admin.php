@@ -1045,15 +1045,32 @@ function assign_student_fee($student_id,$class_id,$section_id,$fee_plan)
         }
         if ($param1 == 'edit') 
         {
+            $exam_id = (!empty($param2) && $param2 > 0) ? $param2 : $this->input->post('exam_id');
             $data['name']    = $this->input->post('name');
             $data['comment'] = $this->input->post('comment');
-            $data['class_id'] = $this->input->post('class');
-
-            $data['year']    = get_running_year();
-            
-            $this->db->where('exam_id', $param2);
-            $this->db->update('exam', $data);
-            $this->load->view('admin/view_exam', $page_data);
+            if($this->input->post('class')!='')
+            {
+                $data['class_id'] = $this->input->post('class');
+            }
+            if($this->input->post('branch')!='')
+            {
+                $data['branch_id'] = $this->input->post('branch');
+            }
+            if($this->input->post('department')!='')
+            {
+                $data['dept_id'] = $this->input->post('department');
+            }
+            if (!empty($exam_id)) {
+                $this->db->where('exam_id', $exam_id);
+                $this->db->update('exam', $data);
+                $db_err = $this->db->error();
+                if (!empty($db_err['code']) && $db_err['code'] != 0) {
+                    $this->session->set_flashdata('error_message', 'Database Error: ' . $db_err['message']);
+                } else {
+                    $this->session->set_flashdata('flash_message', 'Exam updated successfully.');
+                }
+            }
+            redirect(base_url() . 'index.php/admin/view_exam/', 'refresh');
         } 
         if ($param1 == 'delete') {
             $this->db->where('exam_id', $param2);
