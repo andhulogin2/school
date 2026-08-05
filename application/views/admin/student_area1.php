@@ -4,7 +4,7 @@ $role=$this->session->userdata('role');
 ?>
 <?php 
 $running_year = get_running_year();
-$cls_row = ($class_id > 0) ? $this->db->get_where('class',array('class_id'=>$class_id,'academic_year'=>$running_year))->row() : NULL;
+$cls_row = ($class_id !== '' && $class_id !== null) ? $this->db->get_where('class',array('class_id'=>$class_id,'academic_year'=>$running_year))->row() : NULL;
 $cls = ($cls_row) ? $cls_row->name : 'All Classes';
 ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -119,7 +119,7 @@ $cls = ($cls_row) ? $cls_row->name : 'All Classes';
               <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="true"><span class="visible-xs"><i class="ti-home"></i></span><span class="hidden-xs">All Students</span></a></li>
                <?php 
 			   $this->db->order_by('name','ASC');
-			   if ($class_id > 0) {
+			   if ($class_id !== '' && $class_id !== null) {
 			       $this->db->where('class_id', $class_id);
 			   }
 			   $query = $this->db->get_where('section' , array('academic_year' => $running_year)); 
@@ -196,7 +196,7 @@ $cls = ($cls_row) ? $cls_row->name : 'All Classes';
               
 
                <?php 
-               if ($class_id > 0) {
+               if ($class_id !== '' && $class_id !== null) {
                    $this->db->where('class_id', $class_id);
                }
                $query = $this->db->get_where('section' , array('academic_year' => $running_year));
@@ -301,7 +301,7 @@ $cls = ($cls_row) ? $cls_row->name : 'All Classes';
 					 	$this->db->where('e.is_migrated!=','Y');
 					 }
 					 $this->db->where('e.section_id',$row['section_id']);
-                     if ($class_id > 0) {
+                     if ($class_id !== '' && $class_id !== null) {
                          $this->db->where('e.class_id',$class_id);
                      }
 					 $this->db->where('e.year',$running_year);

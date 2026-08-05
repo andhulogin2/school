@@ -219,7 +219,7 @@ class Student_model extends CI_Model {
             $this->db->order_by('s.sex', 'asc');
         }
 
-        if ($class_id != '' && $class_id != '0' && $class_id > 0) {
+        if ($class_id !== '' && $class_id !== null) {
             $this->db->where('e.class_id', $class_id);
         }
         $this->db->where('e.year', $running_year);

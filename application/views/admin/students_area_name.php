@@ -67,7 +67,7 @@
 					 }		
 						
 					 $this->db->where('e.section_id',$section);
-                     if ($class_id > 0) {
+                     if ($class_id !== '' && $class_id !== null) {
                          $this->db->where('e.class_id',$class_id);
                      }
 					 $this->db->where('e.year',$running_year);

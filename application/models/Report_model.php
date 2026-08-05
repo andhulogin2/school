@@ -24,7 +24,7 @@ class Report_model extends CI_Model {
         $this->db->join('class c', 'c.class_id = e.class_id', 'LEFT');
         $this->db->join('section sec', 'sec.section_id = e.section_id', 'LEFT');
 
-        if ($class_id > 0) {
+        if ($class_id !== '' && $class_id !== null) {
             $this->db->where('e.class_id', $class_id);
         }
         if ($section_id > 0) {
