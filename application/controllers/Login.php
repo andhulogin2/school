@@ -45,6 +45,10 @@ class Login extends CI_Controller {
         $academic_year = $this->User_model->get_running_academic_year();
         $this->session->set_userdata('academic_year', $academic_year);
 
+        $is_ajax = $this->input->is_ajax_request() 
+            || (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== FALSE)
+            || $this->input->post('ajax') == '1';
+
         if ($user) {
             $role = (int)$user->user_role_id;
             $deleted = $user->is_deleted;
@@ -52,114 +56,168 @@ class Login extends CI_Controller {
 
             $this->session->set_userdata('is_class_teacher', $is_class_teacher);
 
+            $redirect_url = '';
+
             if ($role === 1) {
+                $this->session->set_userdata('admin_login', '1');
                 $this->session->set_userdata('login_user_id', $user->user_id);
                 $this->session->set_userdata('username', $user->username);
                 $this->session->set_userdata('role', $user->user_role_id);
+                $this->session->set_userdata('branch_id', $user->branch_id);
+                $this->session->set_userdata('dept_id', $user->dept_id);
                 $this->session->set_userdata('login_type', 'admin');
                 $this->session->set_userdata('account_section_id', '1');
-                $this->load->view('admin/admin_dashboard.php');
+                $redirect_url = base_url() . 'index.php/admin/index';
             } else if ($role === 2 && $deleted === 'N') {
+                $this->session->set_userdata('admin_login', '1');
                 $this->session->set_userdata('login_user_id', $user->user_id);
                 $this->session->set_userdata('username', $user->username);
                 $this->session->set_userdata('role', $user->user_role_id);
+                $this->session->set_userdata('branch_id', $user->branch_id);
+                $this->session->set_userdata('dept_id', $user->dept_id);
+                $this->session->set_userdata('login_type', 'admin');
                 $this->session->set_userdata('account_section_id', '1');
-                $this->load->view('admin/admin_dashboard.php');
+                $redirect_url = base_url() . 'index.php/admin/index';
             } else if ($role === 3 && $deleted === 'N') {
+                $this->session->set_userdata('admin_login', '1');
                 $this->session->set_userdata('login_user_id', $user->user_id);
                 $this->session->set_userdata('username', $user->username);
                 $this->session->set_userdata('role', $user->user_role_id);
                 $this->session->set_userdata('branch_id', $user->branch_id);
+                $this->session->set_userdata('login_type', 'admin');
                 $this->session->set_userdata('account_section_id', '1');
-                $this->load->view('admin/admin_dashboard.php');
+                $redirect_url = base_url() . 'index.php/admin/index';
             } else if ($role === 4 && $deleted === 'N') {
+                $this->session->set_userdata('admin_login', '1');
                 $this->session->set_userdata('login_user_id', $user->user_id);
                 $this->session->set_userdata('username', $user->username);
                 $this->session->set_userdata('role', $user->user_role_id);
                 $this->session->set_userdata('branch_id', $user->branch_id);
                 $this->session->set_userdata('dept_id', $user->dept_id);
+                $this->session->set_userdata('login_type', 'admin');
                 $this->session->set_userdata('account_section_id', '4');
-                $this->load->view('admin/admin_dashboard.php');
+                $redirect_url = base_url() . 'index.php/admin/index';
             } else if ($role === 6 && $deleted === 'N' && $is_class_teacher === 'Y') {
+                $this->session->set_userdata('teacher_login', '1');
                 $this->session->set_userdata('login_user_id', $user->user_id);
                 $this->session->set_userdata('username', $user->username);
                 $this->session->set_userdata('role', $user->user_role_id);
                 $this->session->set_userdata('branch_id', $user->branch_id);
                 $this->session->set_userdata('dept_id', $user->dept_id);
-                $this->load->view('class_teacher/class_teacher_dashboard.php');
+                $this->session->set_userdata('login_type', 'teacher');
+                $redirect_url = base_url() . 'index.php/class_teacher/class_teacher_dashboard';
             } else if ($role === 6 && $deleted === 'N' && $is_class_teacher === 'N') {
+                $this->session->set_userdata('teacher_login', '1');
                 $this->session->set_userdata('login_user_id', $user->user_id);
                 $this->session->set_userdata('username', $user->username);
                 $this->session->set_userdata('role', $user->user_role_id);
                 $this->session->set_userdata('branch_id', $user->branch_id);
                 $this->session->set_userdata('dept_id', $user->dept_id);
-                $this->load->view('teacher/teacher_dashboard.php');
+                $this->session->set_userdata('login_type', 'teacher');
+                $redirect_url = base_url() . 'index.php/teacher/teacher_dashboard';
             } else if ($role === 10 && $deleted === 'N') {
                 $year = function_exists('get_running_year') ? get_running_year() : $academic_year;
                 $student_user = $this->User_model->get_student_user_by_credentials($email, $pswd, $year);
                 $student_data = $student_user ? $student_user : $user;
 
+                $this->session->set_userdata('student_login', '1');
                 $this->session->set_userdata('login_user_id', $student_data->user_id);
                 $this->session->set_userdata('username', $student_data->username);
                 $this->session->set_userdata('role', $student_data->user_role_id);
                 $this->session->set_userdata('branch_id', $student_data->branch_id);
                 $this->session->set_userdata('dept_id', $student_data->dept_id);
-                $this->load->view('student/student_dashboard.php');
+                $this->session->set_userdata('login_type', 'student');
+                $redirect_url = base_url() . 'index.php/student/student_dashboard';
             } else if ($role === 8 && $deleted === 'N') {
+                $this->session->set_userdata('library_login', '1');
                 $this->session->set_userdata('login_user_id', $user->user_id);
                 $this->session->set_userdata('username', $user->username);
                 $this->session->set_userdata('role', $user->user_role_id);
                 $this->session->set_userdata('branch_id', $user->branch_id);
                 $this->session->set_userdata('dept_id', $user->dept_id);
-                $this->load->view('library/library_dashboard.php');
+                $this->session->set_userdata('login_type', 'library');
+                $redirect_url = base_url() . 'index.php/library/library_dashboard';
             } else if ($role === 7 && $deleted === 'N') {
+                $this->session->set_userdata('staff_login', '1');
                 $this->session->set_userdata('login_user_id', $user->user_id);
                 $this->session->set_userdata('username', $user->username);
                 $this->session->set_userdata('role', $user->user_role_id);
                 $this->session->set_userdata('branch_id', $user->branch_id);
                 $this->session->set_userdata('dept_id', $user->dept_id);
-                $this->load->view('office_staff/office_dashboard.php');
+                $this->session->set_userdata('login_type', 'staff');
+                $redirect_url = base_url() . 'index.php/office_staff/office_dashboard';
             } else if ($role === 12 && $deleted === 'N') {
+                $this->session->set_userdata('admin_login', '1');
                 $this->session->set_userdata('login_user_id', $user->user_id);
                 $this->session->set_userdata('username', $user->username);
                 $this->session->set_userdata('role', $user->user_role_id);
                 $this->session->set_userdata('branch_id', $user->branch_id);
                 $this->session->set_userdata('dept_id', $user->dept_id);
-                $this->load->view('admin/admin_dashboard.php');
+                $this->session->set_userdata('login_type', 'admin');
+                $redirect_url = base_url() . 'index.php/admin/index';
             } else if ($role === 13 && $deleted === 'N') {
+                $this->session->set_userdata('admin_login', '1');
                 $this->session->set_userdata('login_user_id', $user->user_id);
                 $this->session->set_userdata('username', $user->username);
                 $this->session->set_userdata('role', $user->user_role_id);
                 $this->session->set_userdata('branch_id', $user->branch_id);
                 $this->session->set_userdata('dept_id', $user->dept_id);
+                $this->session->set_userdata('login_type', 'admin');
                 $this->session->set_userdata('account_section_id', '2');
-                $this->load->view('admin/pta_dashboard.php');
+                $redirect_url = base_url() . 'index.php/admin/index';
             } else if ($role === 14 && $deleted === 'N') {
+                $this->session->set_userdata('admin_login', '1');
                 $this->session->set_userdata('login_user_id', $user->user_id);
                 $this->session->set_userdata('username', $user->username);
                 $this->session->set_userdata('role', $user->user_role_id);
                 $this->session->set_userdata('branch_id', $user->branch_id);
                 $this->session->set_userdata('dept_id', $user->dept_id);
+                $this->session->set_userdata('login_type', 'admin');
                 $this->session->set_userdata('account_section_id', '3');
-                $this->load->view('admin/manager_dashboard.php');
+                $redirect_url = base_url() . 'index.php/admin/index';
             } else if ($role === 15 && $deleted === 'N') {
+                $this->session->set_userdata('admin_login', '1');
                 $this->session->set_userdata('login_user_id', $user->user_id);
                 $this->session->set_userdata('username', $user->username);
                 $this->session->set_userdata('role', $user->user_role_id);
                 $this->session->set_userdata('branch_id', $user->branch_id);
                 $this->session->set_userdata('dept_id', $user->dept_id);
-                $this->load->view('admin/clerk_dashboard.php');
+                $this->session->set_userdata('login_type', 'admin');
+                $redirect_url = base_url() . 'index.php/admin/index';
             } else if ($role === 16 && $deleted === 'N') {
+                $this->session->set_userdata('admin_login', '1');
                 $this->session->set_userdata('login_user_id', $user->user_id);
                 $this->session->set_userdata('username', $user->username);
                 $this->session->set_userdata('role', $user->user_role_id);
                 $this->session->set_userdata('branch_id', $user->branch_id);
                 $this->session->set_userdata('dept_id', $user->dept_id);
-                $this->load->view('admin/admin_dashboard.php');
-            } else {
-                echo '<script>alert("INVALID");</script>';
-                $this->load->view('login');
+                $this->session->set_userdata('login_type', 'admin');
+                $redirect_url = base_url() . 'index.php/admin/index';
             }
+
+            if (!empty($redirect_url)) {
+                if ($is_ajax) {
+                    $this->output
+                         ->set_content_type('application/json')
+                         ->set_output(json_encode(array(
+                             'login_status' => 'success',
+                             'redirect_url' => $redirect_url
+                         )));
+                    return;
+                } else {
+                    redirect($redirect_url, 'refresh');
+                    return;
+                }
+            }
+        }
+
+        if ($is_ajax) {
+            $this->output
+                 ->set_content_type('application/json')
+                 ->set_output(json_encode(array(
+                     'login_status' => 'invalid'
+                 )));
+            return;
         } else {
             echo '<script>alert("INVALID");</script>';
             $this->load->view('login');

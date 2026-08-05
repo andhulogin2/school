@@ -6,13 +6,13 @@ if(!isset($_SESSION['login_user_id']))
  redirect(base_url(), 'refresh');
 
 defined('BASEPATH') OR exit('No direct script access allowed');
-    $rtl          = $this->db->get_where('settings' , array('type'=>'rtl'))->row()->description;
+    $rtl          = get_setting('rtl');
 
 ?><!DOCTYPE html>
 <head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		<title>Dashboard - <?php echo $this->db->get_where('settings',array('type'=>'header_title'))->row()->description; ?></title>
+		<title>Dashboard - <?php echo get_setting('header_title', 'School Management System'); ?></title>
 
 		<meta name="description" content="overview &amp; stats" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />

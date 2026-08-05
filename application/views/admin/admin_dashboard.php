@@ -370,12 +370,12 @@ $data=fopen($url,"r");*/
                                                                                                                 //Opening balance
                                                                                                                 $select =   "sum(amount_paid) as amount_paid";
                                                                                                                 $where  =   " DATE_FORMAT(date_paid,'%Y-%m-%d') = '" . date('Y-m-d') . "' and paid_year_id=".$year." and is_deleted='N'";
-                                                                                                                if($role >= 4)
+                                                                                                                if($role >= 4 && $this->session->userdata('dept_id'))
                                                                                                                 {
                                                                                                                     $where  =   $where." and dept_id=". $this->session->userdata('dept_id');
                                                                                                                 }
-                                                                                                                $query_result3                  =       $this->Fee_management_model->view_opening_balance_collection($select,$where)->row();
-                                                                                                                $op_bal                         =       $query_result3->amount_paid;
+                                                                                                                $query_result3                  =       $this->Fee_management_model->view_opening_balance_collection($select,$where);
+                                                                                                                $op_bal                         =       ($query_result3 && $query_result3->num_rows() > 0 && isset($query_result3->row()->amount_paid)) ? $query_result3->row()->amount_paid : 0;
 														$tot				=	$special_fee+$transport_fee+$fee+$op_bal;
 														if($tot=='')
 														{
@@ -459,12 +459,12 @@ $data=fopen($url,"r");*/
                                                                                                                 //Opening balance
                                                                                                                 $select =   "sum(amount_paid) as amount_paid";
                                                                                                                 $where  =   " DATE_FORMAT(date_paid,'%Y-%m-%d') <= '" . date('Y-m-d') . "' and paid_year_id=".$year." and is_deleted='N'";
-                                                                                                                if($role >= 4)
+                                                                                                                if($role >= 4 && $this->session->userdata('dept_id'))
                                                                                                                 {
                                                                                                                     $where  =   $where." and dept_id=". $this->session->userdata('dept_id');
                                                                                                                 }
-                                                                                                                $query_result3                  =       $this->Fee_management_model->view_opening_balance_collection($select,$where)->row();
-                                                                                                                $op_bal                         =       $query_result3->amount_paid;
+                                                                                                                $query_result3                  =       $this->Fee_management_model->view_opening_balance_collection($select,$where);
+                                                                                                                $op_bal                         =       ($query_result3 && $query_result3->num_rows() > 0 && isset($query_result3->row()->amount_paid)) ? $query_result3->row()->amount_paid : 0;
 														$tot				=	$special_fee+$transport_fee+$fee+$op_bal;
 														if($tot=='')
 														{
@@ -790,7 +790,7 @@ $data=fopen($url,"r");*/
 
 
 						<?php
-						if($this->db->get_where('settings',array('type'=>'test_sms'))->row()->description=='yes')
+						if(get_setting('test_sms') == 'yes')
 						{
 							echo form_open(base_url() . 'index.php/admin/send_test_sms/', array('class' => 'form', 'enctype' => 'multipart/form-data'));
 						?>
@@ -823,7 +823,7 @@ $data=fopen($url,"r");*/
 						<?php
 							echo form_close();
 						}
-						if($this->db->get_where('settings',array('type'=>'upcoming_birthdays'))->row()->description=='yes')
+						if(get_setting('upcoming_birthdays') == 'yes')
 						{
 						?>
                         
