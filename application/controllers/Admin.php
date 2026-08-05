@@ -6,6 +6,7 @@ class Admin extends CI_Controller {
     {
         parent::__construct();
         $this->load->model('MobileModel');
+        $this->load->helper('school_management');
     }
 	public function index()
 	{
