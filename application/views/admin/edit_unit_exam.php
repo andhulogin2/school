@@ -4,8 +4,8 @@ $role=$this->session->userdata('role');
  $running_year = get_running_year(); ?>
 
 <?php 
-$edit_data		=	$this->db->get_where('exam' , array('exam_id' => $exam_id) )->result_array();
-foreach ( $edit_data as $row):
+$row = $this->db->get_where('exam' , array('exam_id' => $exam_id) )->row_array();
+if (!empty($row)):
 ?>
 <div class="main-content">
 				<div class="main-content-inner">
@@ -51,7 +51,8 @@ foreach ( $edit_data as $row):
             <div align="right" style="padding-right:100px"><a href="<?php echo base_url() . 'index.php/Admin/view_exam/'; ?>"><b><button class="btn-info">Back</button></b></a></div> 
 
 			<div class="panel-body">	
-                <?php echo form_open(base_url() . 'index.php/admin/create_exam/edit/'.$row['exam_id'] , array('class' => 'form-horizontal form-groups-bordered validate','target'=>'_top'));?>
+                <?php echo form_open('admin/create_exam/edit/'.$row['exam_id'] , array('class' => 'form-horizontal form-groups-bordered validate','target'=>'_top'));?>
+                <input type="hidden" name="exam_id" value="<?php echo $row['exam_id']; ?>" />
             <div class="padded">
 <br>
             
@@ -238,7 +239,7 @@ foreach ( $edit_data as $row):
             </form>
            
 <?php
-endforeach;
+endif;
 ?>
 </div></div>  
   <?php include_once APPPATH . 'views/footer.php'; ?>

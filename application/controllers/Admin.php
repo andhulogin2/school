@@ -1798,6 +1798,7 @@ date_default_timezone_set("Asia/Kolkata");
 		}
 		if ($param1 == 'edit') 
 		{
+			$exam_id = (!empty($param2) && $param2 > 0) ? $param2 : $this->input->post('exam_id');
 			$data['name']    = $this->input->post('name');
 			$data['comment'] = $this->input->post('comment');
 			if($this->input->post('class')!='')
@@ -1813,10 +1814,11 @@ date_default_timezone_set("Asia/Kolkata");
 				$data['dept_id'] = $this->input->post('department');
 			}
 			$data['year']    = get_running_year();
-			$this->db->where('exam_id', $param2);
-			$this->db->update('exam', $data);
-			$page_data['exams']      = $this->db->get('exam')->result_array();
-			//$this->load->view('admin/view_exam', $page_data);
+			if (!empty($exam_id)) {
+				$this->db->where('exam_id', $exam_id);
+				$this->db->update('exam', $data);
+				$this->session->set_flashdata('flash_message', 'Exam updated successfully.');
+			}
 			redirect('admin/view_exam');
 		} 
 		if ($param1 == 'delete') 
