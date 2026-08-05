@@ -64,7 +64,7 @@
 										<div class="col-sm-9">
 											<select name="branch" class="col-xs-10 col-sm-5" id="branch" onChange="return get_dept(this.value)" required="">
                               <option value="">Select</option>
-                              <?php $branch=$this->db->get('tbl_branch')->result_array();
+                              <?php $this->db->where('is_deleted','N'); $branch=$this->db->get('tbl_branch')->result_array();
 							  foreach ($branch as $branch1)
 							  {
 							  ?><option value="<?php echo $branch1['branch_id'];?>"><?php echo $branch1['branch_name'];?></option>

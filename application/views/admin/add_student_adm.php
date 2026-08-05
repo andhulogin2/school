@@ -59,7 +59,7 @@ $role=$this->session->userdata('role');
 										<div class="col-sm-9">
 											<select name="branch" class="select2"  id="branch" onChange="return get_dept(this.value)" required="">
                               <option value="">Select</option>
-                              <?php $branch=$this->db->get('tbl_branch')->result_array();
+                              <?php $this->db->where('is_deleted','N'); $branch=$this->db->get('tbl_branch')->result_array();
 							  foreach ($branch as $branch1)
 							  {
 							  ?><option value="<?php echo $branch1['branch_id'];?>"><?php echo $branch1['branch_name'];?></option>
@@ -167,7 +167,7 @@ $role=$this->session->userdata('role');
         <div class="col-sm-8">
           <select name="branch1" class="col-xs-10 col-sm-6 form-control"  id="branch1" onChange="get_dept1(this.value);" >
           <option value="">Select</option>
-          <?php $branch=$this->db->get('tbl_branch')->result_array();
+          <?php $this->db->where('is_deleted','N'); $branch=$this->db->get('tbl_branch')->result_array();
           foreach ($branch as $branch1)
           {
           ?><option value="<?php echo $branch1['branch_id'];?>"><?php echo $branch1['branch_name'];?></option>
@@ -268,7 +268,7 @@ $role=$this->session->userdata('role');
         <div class="col-sm-8">
           <select name="branch2" class="col-xs-10 col-sm-6 form-control"  id="branch2" onChange="get_dept2(this.value);" >
           <option value="">Select</option>
-          <?php $branch=$this->db->get('tbl_branch')->result_array();
+          <?php $this->db->where('is_deleted','N'); $branch=$this->db->get('tbl_branch')->result_array();
           foreach ($branch as $branch1)
           {
           ?><option value="<?php echo $branch1['branch_id'];?>"><?php echo $branch1['branch_name'];?></option>
