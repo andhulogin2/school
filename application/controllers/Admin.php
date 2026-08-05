@@ -1960,10 +1960,11 @@ date_default_timezone_set("Asia/Kolkata");
 	}
 	
 	
-    function marks_update1($class_id = '' ,$section_id = '' ,$exam_id = '',$subject_id,$dept_id='')
+    function marks_update1($class_id = '' ,$section_id = '' ,$exam_id = '',$subject_id = '',$dept_id='')
 	{
 		$running_year = get_running_year();
 		$marks_of_students= $this->crud_model->get_students_marks($class_id,$section_id,$exam_id,$subject_id,$running_year);
+		$result = 0;
 		/*echo "<pre>";
 		print_r($marks_of_students);
 		echo "</pre>";die();*/
@@ -2045,14 +2046,18 @@ date_default_timezone_set("Asia/Kolkata");
 			}	
 			
 		}
+
+		$page_data = array(
+			'dept_id'    => $dept_id,
+			'exam_id'    => $exam_id,
+			'class_id'   => $class_id,
+			'subject_id' => $subject_id,
+			'section_id' => $section_id
+		);
+
 		if($result>0)
 		{
 			$page_data["action"]="success";
-			$page_data['dept_id']    =   $dept_id;
-			$page_data['exam_id']    =   $exam_id;
-			$page_data['class_id']   =   $class_id;
-			$page_data['subject_id'] =   $subject_id;
-			$page_data['section_id'] =   $section_id;
 		}
 		$this->load->view('admin/marks_upload', $page_data);
 	}
