@@ -467,6 +467,7 @@ class Admin extends CI_Controller {
 		$user_id=$this->db->insert_id();
 		$data['branch_id']				=	$branch_id;
 		$data['dept_id']				=	$dept_id;
+		$data['student_status_id']		=	'0';
 		$data['name']           		= $this->input->post('name');
 		$data['admission_number']       = $this->input->post('admission_no');
 		
@@ -690,10 +691,8 @@ class Admin extends CI_Controller {
 		} 
 		if ($notification =='')
 		{
-		//echo "aa";
-		    redirect('Admin/student_add');
-			//$this->load->view('admin/add_student.php',$page_data);
-			
+		    $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+		    redirect('Admin/student_add', 'refresh');
 		} 
 		
 		if($result>0)

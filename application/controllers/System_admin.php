@@ -210,7 +210,7 @@ echo  "<table border='0'><tr><td colspan='2' align='center'></td><td colspan='2'
 		 $data_user['user_role_id']	=	'4';
 		 $this->db->insert('tbl_users',$data_user);
 		 $user_id=$this->db->insert_id();
-		
+		$data['student_status_id']	=	'0';
 	 	$data['name']           = $this->input->post('name');
 		$data['birthday']       = $this->input->post('birthday');
         $data['date']           = strtotime(date("d M,Y"));

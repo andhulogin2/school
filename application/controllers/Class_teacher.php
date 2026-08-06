@@ -1070,6 +1070,7 @@ $this->load->view('class_teacher/study_material_edit.php',$data);    }
 		$user_id=$this->db->insert_id();
 		$data['branch_id']		=	$branch_id;
 		$data['dept_id']		=	$dept_id;
+		$data['student_status_id']	=	'0';
 		$data['name']           = $this->input->post('name');
 		$data['admission_number']           = $this->input->post('admission_no');
 		

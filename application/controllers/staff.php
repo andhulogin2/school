@@ -200,6 +200,7 @@ echo  "<table border='0'><tr><td colspan='2' align='center'></td><td colspan='2'
 	function add_student()
     {
 	$running_year = get_running_year();
+		$data['student_status_id']	=	'0';
 	 	$data['name']           = $this->input->post('name');
 		$data['birthday']       = $this->input->post('birthday');
         $data['date']           = strtotime(date("d M,Y"));
