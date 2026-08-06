@@ -963,9 +963,6 @@ class Admin extends CI_Controller {
 			}
 		}
 	}
-		$page_data['staff_id']  =  $staff_id;
-		$this->load->view('admin/staff_view', $page_data);
-	}
 	
 	
 	function staff_edit($param1 = '', $param2 = '', $param3 = '')
