@@ -65,74 +65,58 @@ if (!empty($row)):
 
 										<div class="col-sm-5">
 											<select name="branch" class="select2" id="branch" required="" onChange="return get_dept(this.value)">
-                              <option value="">Select</option>
-                              <?php $branch=$this->db->get('tbl_branch')->result_array();
+                               <option value="">Select</option>
+                               <?php $branch=$this->db->get('tbl_branch')->result_array();
 							  foreach ($branch as $branch1)
 							  {
-							  if($branch1['branch_id']==$row['branch_id'])
-							  {
 							  ?>
-                              <option value="<?php echo $branch1['branch_id'];?>" selected="selected"><?php echo $branch1['branch_name'];?></option>
-                              <?php
-							  }
-							  else
-							  {
-							  ?>
-                              <option value="<?php echo $branch1['branch_id'];?>"><?php echo $branch1['branch_name'];?></option>
-                              <?php
-							  } 
-							  }?>
-                              
-                          </select>
+                               <option value="<?php echo $branch1['branch_id'];?>" <?php if($branch1['branch_id']==$row['branch_id']) echo 'selected="selected"'; ?>><?php echo $branch1['branch_name'];?></option>
+                               <?php } ?>
+                           </select>
 										</div>
 									</div>
-                                    
-                                    <div class="form-group">
+                                     
+                                     <div class="form-group">
 										<label class="col-sm-4 control-label no-padding-right" for="form-field-1">Department :<font color="#FF0000">* </font></label>
 
 										<div class="col-sm-5">
 											<select name="department" class="select2" id="department" required=""  onChange="return get_class1(this.value)">
-                              <option value="">Select</option>
-                              <?php $dept=$this->db->get('tbl_department')->result_array();
+                               <option value="">Select</option>
+                               <?php 
+                               if(!empty($row['branch_id'])) {
+                                   $this->db->where('branch_id', $row['branch_id']);
+                               }
+                               $dept=$this->db->get('tbl_department')->result_array();
 							  foreach ($dept as $dept1)
 							  {
-							  if($dept1['dept_id']==$row['dept_id'])
-							  {
 							  ?>
-                              <option value="<?php echo $dept1['dept_id'];?>" selected="selected"><?php echo $dept1['dept_name'];?></option>
-                              <?php
-							  }
-							  }
-							  ?>
-                              
-                          </select>
+                               <option value="<?php echo $dept1['dept_id'];?>" <?php if($dept1['dept_id']==$row['dept_id']) echo 'selected="selected"'; ?>><?php echo $dept1['dept_name'];?></option>
+                               <?php } ?>
+                           </select>
 										</div>
 									</div>
-		     		<div class="form-group">
                    <div class="form-group">
 										<label class="col-sm-4 control-label no-padding-right" for="form-field-1-1">Class:<font color="#FF0000">* </font></label>
 
 										<div class="col-sm-5">
 									<select name="class" id="class" class="select2" required=""  onChange="return get_class_sections(this.value)">
-                                     <option value="">Select</option>
-                                     <?php $class=$this->db->get('class')->result_array();
+                                      <option value="">Select</option>
+                                      <?php 
+                                      if(!empty($row['dept_id'])) {
+                                          $this->db->where('dept_id', $row['dept_id']);
+                                      }
+                                      $class=$this->db->get('class')->result_array();
 							  foreach ($class as $class1)
 							  {
-							  if($class1['class_id']==$row['class_id'])
-							  {
 							  ?>
-                              <option value="<?php echo $class1['class_id'];?>" selected="selected"><?php echo $class1['name'];?></option>
-                              <?php
-							  }
-							  }
-							  ?>
-                          </select>
-											
+                               <option value="<?php echo $class1['class_id'];?>" <?php if($class1['class_id']==$row['class_id']) echo 'selected="selected"'; ?>><?php echo $class1['name'];?></option>
+                               <?php } ?>
+                           </select>
 										</div>
 									</div>
-                                    <?php }?>
-                                    
-                                    <?php if($this->session->userdata('role')==3)
+                                     <?php }?>
+                                     
+                                     <?php if($this->session->userdata('role')==3)
 {?>
 
 		<div class="form-group">
@@ -141,47 +125,33 @@ if (!empty($row)):
 										<div class="col-sm-5">
 			<select name="department" class="select2" id="department" onChange="return get_class1(this.value)" required="">
             <option value="">Select</option>
-            
-                              <?php 
+                               <?php 
 							  $this->db->where('branch_id',$this->session->userdata('branch_id'));
 							  $dept=$this->db->get('tbl_department')->result_array();
 							  foreach ($dept as $dept1)
 							  {
-							   if($dept1['dept_id']==$row['dept_id'])
-							  {
 							  ?>
-                              <option value="<?php echo $dept1['dept_id'];?>" selected="selected"><?php echo $dept1['dept_name'];?></option>
-                              <?php
-							  }
-							  else
-							  {
-							  ?><option value="<?php echo $dept1['dept_id'];?>"><?php echo $dept1['dept_name'];?></option>
-                              <?php 
-							  }
-							  }?>
-                             
-                             
-                              
-                          </select>
+                               <option value="<?php echo $dept1['dept_id'];?>" <?php if($dept1['dept_id']==$row['dept_id']) echo 'selected="selected"'; ?>><?php echo $dept1['dept_name'];?></option>
+                               <?php } ?>
+                           </select>
 		</div>
 	</div>
 <div class="form-group">
 										<label class="col-sm-4 control-label no-padding-right" for="form-field-1-1">Class: <font color="#FF0000">* </font></label>
 
 										<div class="col-sm-5">
-			<select name="class" class="form-control selectboxit" onchange="select_section(this.value)" id="class" class="select2" required="">
+			<select name="class" class="form-control select2" onchange="select_section(this.value)" id="class" required="">
 				<option value="">Select</option>
-				<?php $class=$this->db->get('class')->result_array();
+				<?php 
+                if(!empty($row['dept_id'])) {
+                    $this->db->where('dept_id', $row['dept_id']);
+                }
+                $class=$this->db->get('class')->result_array();
 							  foreach ($class as $class1)
 							  {
-							  if($class1['class_id']==$row['class_id'])
-							  {
 							  ?>
-                              <option value="<?php echo $class1['class_id'];?>" selected="selected"><?php echo $class1['name'];?></option>
-                              <?php
-							  }
-							  }
-							  ?>
+                               <option value="<?php echo $class1['class_id'];?>" <?php if($class1['class_id']==$row['class_id']) echo 'selected="selected"'; ?>><?php echo $class1['name'];?></option>
+                               <?php } ?>
 			</select>
 		</div>
 	</div>
@@ -203,13 +173,9 @@ if (!empty($row)):
 									 $this->db->where('academic_year',$running_year);
 									 $class 	=	$this->db->get('class')->result_array();
 									 foreach($class as $data){
-									 if($data['class_id']==$row['class_id'])
 								     ?>
-                                      <option value="<?php echo $data['class_id']?>"><?php echo $data['name']?></option>
-                                     
-                                     
+                                      <option value="<?php echo $data['class_id']?>" <?php if($data['class_id']==$row['class_id']) echo 'selected="selected"'; ?>><?php echo $data['name']?></option>
                                        <?php } ?>
-				
 			</select>
 		</div>
 	</div>
