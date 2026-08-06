@@ -9724,7 +9724,7 @@ function get_class_section_notification($class_id='')
 			$img['date']		=	date('Y-m-d');
 			$img['year_id']		=	get_running_year();
 			$gallery_master_id	=	$this->crud_model->gallery_master_insert($img);
-			$img				=	'';
+			$img_detail			=	array();
 				
 			if (!file_exists('./uploads/photo_gallery')) {
 				mkdir('./uploads/photo_gallery', 0777, true);
@@ -9763,10 +9763,11 @@ function get_class_section_notification($class_id='')
 				else
 				{
 					$data 						= 	$this->upload->data();
-					$img['gallery_master_id']	=	$gallery_master_id;
-					$img['url']					=	'uploads/photo_gallery/'.$gallery_master_id.'/'.$data['file_name'];		
-					$img['description']			=	$this->input->post('description_'.$i);		
-					$gallery_details_id[]		=	$this->crud_model->gallery_details_insert($img);
+					$img_detail                 =   array();
+					$img_detail['gallery_master_id'] = $gallery_master_id;
+					$img_detail['url']          =   'uploads/photo_gallery/'.$gallery_master_id.'/'.$data['file_name'];		
+					$img_detail['description']  =   $this->input->post('description_'.$i);		
+					$gallery_details_id[]       =   $this->crud_model->gallery_details_insert($img_detail);
 					//$this->resize_image($img['url']);
 					
 					////////////
@@ -9916,10 +9917,11 @@ function get_class_section_notification($class_id='')
 			else
 			{
 				$data 						= 	$this->upload->data();
-				$img['gallery_master_id']	=	$gallery_master_id;
-				$img['url']					=	'uploads/photo_gallery/'.$gallery_master_id.'/'.$data['file_name'];		
-				$img['description']			=	$description;		
-				$gallery_details_id			=	$this->crud_model->gallery_details_insert($img);
+				$img_detail                 =   array();
+				$img_detail['gallery_master_id'] = $gallery_master_id;
+				$img_detail['url']          =   'uploads/photo_gallery/'.$gallery_master_id.'/'.$data['file_name'];		
+				$img_detail['description']  =   $description;		
+				$gallery_details_id			=	$this->crud_model->gallery_details_insert($img_detail);
 				//$this->resize_image($img['url']);
 			}
 							
