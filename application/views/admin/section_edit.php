@@ -134,22 +134,11 @@ $role=$this->session->userdata('role');
 												select
                                                 </option>
 									<?php foreach($teachers as $row2){
-									if($row['teacher_id']==$row2['staff_id'])
-									{
-										?>
-                                		<option value="<?php echo $row2['staff_id'];?>">
-												<?php echo $row2['name'];?>
-                                                </option>
-                                    <?php
-									}
-									else
-									{
 									?>
-                                		<option value="<?php echo $row2['staff_id'];?>">
+                                		<option value="<?php echo $row2['staff_id'];?>" <?php if($row['teacher_id']==$row2['staff_id']) echo 'selected="selected"'; ?>>
 												<?php echo $row2['name'];?>
-                                                </option>
+                                        </option>
                                     <?php
-									}
 									}
 								?>
                                           

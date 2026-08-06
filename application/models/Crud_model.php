@@ -301,8 +301,9 @@ class Crud_model extends CI_Model {
 	  
     }
 	function edit_section($data,$param2) {
-      $this->db->where('section_id' , $param2);
-      $this->db->update('section' , $data);
+      if ((int)$param2 <= 0) return false;
+      $this->db->where('section_id' , (int)$param2);
+      return $this->db->update('section' , $data);
     }
 	function template_create($data) {
       return $this->db->insert('sms_template', $data);
@@ -379,8 +380,9 @@ class Crud_model extends CI_Model {
 
     }
 	function delete_section($param2) {
-      $this->db->where('section_id' , $param2);
-      $this->db->delete('section');
+      if ((int)$param2 <= 0) return false;
+      $this->db->where('section_id' , (int)$param2);
+      return $this->db->delete('section');
     }
 	function staff_insert($branch_id,$dept,$name,$designation,$username,$birthday,$salary,$sex,$address,$phone,$email,$password) {
 			 $role=$this->session->userdata('role');
@@ -2342,27 +2344,37 @@ if($this->db->get_where('settings' , array('type' =>'pos_common_word'))->row()->
 		
     }
 	function delete_section_bulk($class_id,$section_id) {
-        $this->db->where('class_id',$class_id);
-		$this->db->where('section_id',$section_id);
+		$sec_id = (int)$section_id;
+		if ($sec_id <= 0) {
+			return false;
+		}
+		$cls_id = (int)$class_id;
+		if ($cls_id > 0) {
+			$this->db->where('class_id', $cls_id);
+		}
+        $this->db->where('section_id', $sec_id);
 		$this->db->delete('section');
+		$affected = $this->db->affected_rows();
 		
-		$this->db->where('class_id',$class_id);
-		$this->db->where('section_id',$section_id);
+		if ($cls_id > 0) {
+			$this->db->where('class_id', $cls_id);
+		}
+		$this->db->where('section_id', $sec_id);
 		$this->db->delete('enroll');
 		
-		
-		
-		
-		
-		$this->db->where('class_id',$class_id);
-		$this->db->where('section_id',$section_id);
+		if ($cls_id > 0) {
+			$this->db->where('class_id', $cls_id);
+		}
+		$this->db->where('section_id', $sec_id);
 		$this->db->delete('ranks');
 		
-		$this->db->where('class_id',$class_id);
-		$this->db->where('section_id',$section_id);
-		return $this->db->delete('mark');
-		
-		
+		if ($cls_id > 0) {
+			$this->db->where('class_id', $cls_id);
+		}
+		$this->db->where('section_id', $sec_id);
+		$this->db->delete('mark');
+
+		return $affected;
     }
 	
 	function delete_subject_bulk($class_id,$subject_id) {
