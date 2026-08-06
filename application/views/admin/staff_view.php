@@ -156,8 +156,11 @@ $role=$this->session->userdata('role');
                 <td style="text-align: center;"><?php echo $this->db->get_where('settings' , array('type' =>'currency'))->row()->description;?><?php echo $row['salary'];?></td>
             	  <td style="text-align: center;"><?php echo $row['phone'];?></td>
 				        <td style="text-align: center;"><?php echo $row['email'];?></td>
-			         <td style="text-align: center;" class="text-nowrap"><a href="<?php echo base_url();?>index.php/admin/staff_profile/<?php echo $row['staff_id'];?>" data-toggle="tooltip" data-original-title="Profile"> <i class="fa fa-user text-inverse m-r-10"></i></a>
-                     <!--<a href="<?php echo base_url();?>index.php/admin/staff_edit/delete/<?php echo $row['staff_id'];?>" data-toggle="tooltip" data-original-title="Delete" onClick="return confirm('Are-you-sure');"> <i class="fa fa-close text-danger"></i> </a>--></td>
+			         <td style="text-align: center;" class="text-nowrap">
+						<a href="<?php echo base_url();?>index.php/admin/staff_profile/<?php echo $row['staff_id'];?>" data-toggle="tooltip" data-original-title="Profile"> <i class="fa fa-user text-inverse m-r-10"></i></a>
+						&nbsp;&nbsp;&nbsp;
+						<a href="<?php echo base_url();?>index.php/Admin/staff_delete/<?php echo $row['staff_id'];?>" data-toggle="tooltip" data-original-title="Delete" onclick="return confirmation();"> <i class="fa fa-remove text-inverse m-r-10" style="color:#FF0000"></i></a>
+					 </td>
                 </tr>
                 <?php endforeach;?>
               </tbody>
@@ -217,15 +220,18 @@ $role=$this->session->userdata('role');
 		          ?>
                 <td style="text-align: center;"><?php echo $row['name'];?></td>
             	  <td style="text-align: center;"><?php echo $row['username'];?></td>
-                 <td style="text-align: center;"><?php echo $this->db->get_where('tbl_user_roles' , array('role_id' =>$row['role']))->row()->role_name;?>
+                  <td style="text-align: center;"><?php echo $this->db->get_where('tbl_user_roles' , array('role_id' =>$row['role']))->row()->role_name;?>
                   </td>
                  
 				  
                 <td style="text-align: center;"><?php echo $this->db->get_where('settings' , array('type' =>'currency'))->row()->description;?><?php echo $row['salary'];?></td>
             	  <td style="text-align: center;"><?php echo $row['phone'];?></td>
 				        <td style="text-align: center;"><?php echo $row['email'];?></td>
-			         <td style="text-align: center;" class="text-nowrap"><a href="<?php echo base_url();?>index.php/admin/staff_profile/<?php echo $row['staff_id'];?>" data-toggle="tooltip" data-original-title="Profile"> <i class="fa fa-user text-inverse m-r-10"></i></a>
-                   <!--  <a href="<?php echo base_url();?>index.php/admin/staff_edit/delete/<?php echo $row['staff_id'];?>" data-toggle="tooltip" data-original-title="Delete" onClick="return confirm('Are-you-sure');"> <i class="fa fa-close text-danger"></i> </a>--></td>
+			         <td style="text-align: center;" class="text-nowrap">
+						<a href="<?php echo base_url();?>index.php/admin/staff_profile/<?php echo $row['staff_id'];?>" data-toggle="tooltip" data-original-title="Profile"> <i class="fa fa-user text-inverse m-r-10"></i></a>
+						&nbsp;&nbsp;&nbsp;
+						<a href="<?php echo base_url();?>index.php/Admin/staff_delete/<?php echo $row['staff_id'];?>" data-toggle="tooltip" data-original-title="Delete" onclick="return confirmation();"> <i class="fa fa-remove text-inverse m-r-10" style="color:#FF0000"></i></a>
+					 </td>
                 </tr>
                 <?php endforeach;?>
               </tbody>
@@ -282,25 +288,18 @@ $role=$this->session->userdata('role');
 		          ?>
                 <td style="text-align: center;"><?php echo $row['name'];?></td>
             	  <td style="text-align: center;"><?php echo $row['username'];?></td>
-                 <td style="text-align: center;"><?php echo $this->db->get_where('tbl_user_roles' , array('role_id' =>$row['role']))->row()->role_name;?>
+                  <td style="text-align: center;"><?php echo $this->db->get_where('tbl_user_roles' , array('role_id' =>$row['role']))->row()->role_name;?>
                   </td>
                  
 				  
                 <td style="text-align: center;"><?php echo $this->db->get_where('settings' , array('type' =>'currency'))->row()->description;?><?php echo $row['salary'];?></td>
             	  <td style="text-align: center;"><?php echo $row['phone'];?></td>
 				        <td style="text-align: center;"><?php echo $row['email'];?></td>
-			         <td style="text-align: center;" class="text-nowrap"><a href="<?php echo base_url();?>index.php/admin/staff_profile/<?php echo $row['staff_id'];?>" data-toggle="tooltip" data-original-title="Profile"> <i class="fa fa-user text-inverse m-r-10"></i></a>
-                     &nbsp;&nbsp;&nbsp;
-                     <?php
-					 
-					 if($role != $row['role'])
-					 {
-					 ?>
-                     <a href="<?php echo base_url();?>index.php/Admin/staff_delete/<?php echo $row['staff_id'];?>" data-toggle="tooltip" data-original-title="Profile" onclick="return confirmation();" > <i class="fa fa-remove text-inverse m-r-10" style="color:#FF0000"></i></a>
-                     <?php
-					 }
-					 ?>
-                  <!--   <a href="<?php echo base_url();?>index.php/admin/staff_edit/delete/<?php echo $row['staff_id'];?>" data-toggle="tooltip" data-original-title="Delete" onClick="return confirm('Are-you-sure');"> <i class="fa fa-close text-danger"></i> </a>--></td>
+			         <td style="text-align: center;" class="text-nowrap">
+						<a href="<?php echo base_url();?>index.php/admin/staff_profile/<?php echo $row['staff_id'];?>" data-toggle="tooltip" data-original-title="Profile"> <i class="fa fa-user text-inverse m-r-10"></i></a>
+						&nbsp;&nbsp;&nbsp;
+						<a href="<?php echo base_url();?>index.php/Admin/staff_delete/<?php echo $row['staff_id'];?>" data-toggle="tooltip" data-original-title="Delete" onclick="return confirmation();"> <i class="fa fa-remove text-inverse m-r-10" style="color:#FF0000"></i></a>
+					 </td>
                 </tr>
                 <?php endforeach;?>
               </tbody>

@@ -935,34 +935,34 @@ class Admin extends CI_Controller {
 			
 			if(count($section)==0 && count($subject_teacher)==0)
 			{
-				$user_id	= 	$this->session->userdata('login_user_id');
-				$data		=	array(
-									'is_deleted'	=>	'Y',
-									'deleted_by'	=>	$user_id,
-									'deleted_date'	=>	date('Y-m-d')
-									);
-				$this->db->where('staff_id',$staff_id);
-				$this->db->update('staff',$data);
-				$row	=	$this->db->affected_rows();
-				
-				$user_id	=	$this->db->get_where('staff',array('staff_id'=>$staff_id))->row()->user_id;
-				$data1		=	array(
-									'is_deleted'	=>	'Y',
-									'deleted_by'	=>	$user_id,
-									'deleted_date'	=>	date('Y-m-d')
-									);
-				
-				$this->db->where('user_id',$user_id);
-				$this->db->update('tbl_users',$data1);
-				$row1	=	$this->db->affected_rows();
-				if($row>0 && $row1>0)
-				{
-					$this->session->set_flashdata('action','deleted');
-					redirect('Admin/staff_view');
-				}	
+				$current_user_id = $this->session->userdata('login_user_id');
+				$staff_row = $this->db->get_where('staff', array('staff_id' => $staff_id))->row();
+				$staff_user_id = isset($staff_row->user_id) ? $staff_row->user_id : 0;
+
+				$data = array(
+					'is_deleted'   => 'Y',
+					'deleted_by'   => $current_user_id,
+					'deleted_date' => date('Y-m-d')
+				);
+				$this->db->where('staff_id', $staff_id);
+				$this->db->update('staff', $data);
+				$row = $this->db->affected_rows();
+
+				if ($staff_user_id > 0) {
+					$data1 = array(
+						'is_deleted'   => 'Y',
+						'deleted_by'   => $current_user_id,
+						'deleted_date' => date('Y-m-d')
+					);
+					$this->db->where('user_id', $staff_user_id);
+					$this->db->update('tbl_users', $data1);
+				}
+
+				$this->session->set_flashdata('action', 'deleted');
+				redirect('Admin/staff_view');
 			}
-			
 		}
+	}
 		$page_data['staff_id']  =  $staff_id;
 		$this->load->view('admin/staff_view', $page_data);
 	}

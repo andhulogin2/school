@@ -295,7 +295,6 @@ if($role==1 || $role==2)
         });
     }
 </script>
- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script type="text/javascript">
     $(function () {
         $("#additional_msg").click(function () {
@@ -324,8 +323,6 @@ echo "<script>toastr.error('". "Invalid...', 'Failed', {timeOut: 5000})</script>
 <script type="text/javascript">
 	function get_dept(branch_id) 
 	{
-	//alert(branch_id);
-	
     	$.ajax({
             url: '<?php echo base_url();?>index.php/admin/get_dept/' + branch_id ,
             success: function(response)
@@ -334,9 +331,6 @@ echo "<script>toastr.error('". "Invalid...', 'Failed', {timeOut: 5000})</script>
             }
         });
     }
-	
-
-	
 </script>
 
 <script type="text/javascript">
@@ -374,25 +368,24 @@ echo "<script>toastr.error('". "Invalid...', 'Failed', {timeOut: 5000})</script>
 	$('#dept_role').show();
 	}
     }
-	
-
-	
 </script>
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script> 	 
+
+<script src="<?php echo base_url(); ?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#dob').datepicker({
-            autoclose: true,
-            todayHighlight: true,
-			dateFormat: 'dd-mm-yy'
-        })
+        if (typeof $.fn.datepicker !== 'undefined') {
+            $('#dob').datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd-mm-yyyy'
+            });
+        }
 	 });
- </script>
- <script type="text/javascript">
+</script>
+
+<script type="text/javascript">
     function username(user_name)
-  {
- 
+    {
     	$.ajax({
             url: '<?php echo base_url();?>index.php/admin/check_user/' +user_name,
             success: function(response)
@@ -403,16 +396,19 @@ echo "<script>toastr.error('". "Invalid...', 'Failed', {timeOut: 5000})</script>
     }
 </script>
 
-
 <script src="<?php echo base_url(); ?>assets/js/select2.js"></script>
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/select2.css" />
 <script type="text/javascript">
-
-$('.select2').css('width','350px').select2({allowClear:true})
-				$('#select2-multiple-style .btn').on('click', function(e){
-					var target = $(this).find('input[type=radio]');
-					var which = parseInt(target.val());
-					if(which == 2) $('.select2').addClass('tag-input-style');
-					 else $('.select2').removeClass('tag-input-style');
-				});                                  
- </script>              
+    $(document).ready(function() {
+        if (typeof $.fn.select2 !== 'undefined') {
+            $('.select2').css('width','350px').select2({allowClear:true});
+            $('#select2-multiple-style .btn').on('click', function(e){
+                var target = $(this).find('input[type=radio]');
+                var which = parseInt(target.val());
+                if(which == 2) $('.select2').addClass('tag-input-style');
+                else $('.select2').removeClass('tag-input-style');
+            });
+        }
+    });
+</script>
+              
