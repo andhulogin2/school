@@ -5242,12 +5242,8 @@ $data2['academic_year']         = $running_year;
 	function view_class_delete($class_id)
 	{
 	$this->load->Model('crud_model');
-	
 	$this->crud_model->delete_classes($class_id);
-	
-	
 	redirect(base_url() . 'index.php/admin/view_class/', 'refresh'); 
-	
 	}
 	function subject_delete($subject_id,$class_id,$branch_id='',$dept_id='')
 	{

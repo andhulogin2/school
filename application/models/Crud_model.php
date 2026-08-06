@@ -161,10 +161,12 @@ class Crud_model extends CI_Model {
      $this->db->update('class', array('name'=>$param2));
     }
 	function delete_classes($param2) {
-      $this->db->where('class_id', $param2);
+		// Safety guard: never delete if class_id is 0 or negative
+		// (prevents wiping all rows that share a class_id=0 from missing AUTO_INCREMENT)
+		if ((int)$param2 <= 0) { return false; }
+      $this->db->where('class_id', (int)$param2);
       $this->db->delete('class');
-		
-	  $this->db->where('class_id', $param2);
+	  $this->db->where('class_id', (int)$param2);
       $this->db->delete('section');
     }
 	function student_update($data,$student_id,$data1) {
@@ -2315,6 +2317,10 @@ if($this->db->get_where('settings' , array('type' =>'pos_common_word'))->row()->
     }
 	
 	function delete_class_bulk($class_id) {
+		// Safety guard: never allow delete with class_id = 0 or negative
+		// (would wipe all classes that share a 0 id, symptom of missing AUTO_INCREMENT)
+		if ((int)$class_id <= 0) { return false; }
+		$class_id = (int)$class_id;
         $this->db->where('class_id',$class_id);
 		$this->db->delete('class');
 		
