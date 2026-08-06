@@ -134,8 +134,11 @@ include_once APPPATH . 'views/main_head.php';
 															<?php echo get_class_name($class_id); ?> 
 														</center></td>
 														<td><center><?php echo $data['name'];?></center></td>
-                                                        <?php $w=$this->db->get_where('staff',array('staff_id'=>$data['teacher_id'],'role'=>'6'))->row()->name;?>
-														<td><center><?php echo $w;?></center></td>
+                                                        <?php 
+                                                        $w_row = $this->db->get_where('staff', array('staff_id' => $data['teacher_id'], 'role' => '6'))->row();
+                                                        $w_name = isset($w_row->name) ? $w_row->name : '';
+                                                        ?>
+														<td><center><?php echo $w_name;?></center></td>
 
 														
 														
