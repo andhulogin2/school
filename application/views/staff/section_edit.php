@@ -57,8 +57,8 @@
                                      
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Section Name :<font color="#FF0000">* </font></label>
-                                     <?php $p=$this->db->get_where('section',array('section_id'=>$section_id))->result_array();
-									 foreach($p as $row){?>
+                                     <?php $row=$this->db->get_where('section',array('section_id'=>$section_id))->row_array();
+									 if(!empty($row)){?>
 										<div class="col-sm-9">
 											<input type="text" id="name" value="<?php echo $row['name'];?>" class="col-xs-10 col-sm-5" name="name" />
 										</div>

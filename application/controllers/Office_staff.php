@@ -3179,9 +3179,15 @@ class Office_staff extends CI_Controller {
 	}
 	function section_delete($section_id)
 	{
-	$this->load->Model('crud_model');
-	$this->crud_model->delete_section($section_id);
-	redirect(base_url() . 'index.php/Office_staff/section' , 'refresh');
+		$section_row = $this->db->get_where('section', array('section_id' => $section_id))->row();
+		$class_id = isset($section_row->class_id) ? $section_row->class_id : '';
+		$this->load->Model('crud_model');
+		$this->crud_model->delete_section($section_id);
+		if (!empty($class_id)) {
+			redirect(base_url() . 'index.php/Office_staff/section/' . $class_id, 'refresh');
+		} else {
+			redirect(base_url() . 'index.php/Office_staff/section', 'refresh');
+		}
 	}
 	function add_subject($class_id)
 	{
