@@ -801,12 +801,6 @@ echo "<script>toastr.error('". "Invalid...', 'Failed', {timeOut: 5000})</script>
 		
 		<script src="<?php echo base_url(); ?>assets/js/ace-elements.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/ace.js"></script>
-				
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-
-
-
-<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 <script type="text/javascript">
 
 
@@ -956,10 +950,9 @@ function get_fee_master(class_id)
 				var ie_timeout = null;//a time for old browsers uploading via iframe
 				
 				$form.on('submit', function(e) {
-					e.preventDefault();
-				
 					var files = file_input.data('ace_input_files');
-					if( !files || files.length == 0 ) return false;//no files selected
+					if( !files || files.length == 0 ) return true;//no custom files selected, proceed with form submit
+					e.preventDefault();
 										
 					var deferred ;
 					if( "FormData" in window ) {
@@ -1108,9 +1101,6 @@ function get_fee_master(class_id)
 
 			});
 		</script>
-
-
- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script type="text/javascript">
     $(function () {
         $("#additional_msg").click(function () {
@@ -1561,10 +1551,6 @@ function get_fee_master(class_id)
 				});
 			});
 		</script>
-						
-		
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>                                                           
   <script type="text/javascript">
     $(document).ready(function () {
         $('.mydatepicker').datepicker({
@@ -1871,6 +1857,6 @@ function reload_section()
             $('#errorMsg').hide();
             $('#btnSubmit').prop('disabled',false);
         }
-    }
-	
 </script>
+
+<?php include_once APPPATH . 'views/footer.php'; ?>

@@ -775,12 +775,6 @@ echo "<script>toastr.error('". "Invalid...', 'Failed', {timeOut: 5000})</script>
 		
 		<script src="<?php echo base_url(); ?>assets/js/ace-elements.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/ace.js"></script>
-				
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-
-
-
-<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 <script type="text/javascript">
 
 
@@ -1050,9 +1044,6 @@ function get_fee_master(class_id)
 
 			});
 		</script>
-
-
- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script type="text/javascript">
     $(function () {
         $("#additional_msg").click(function () {
@@ -1065,8 +1056,6 @@ function get_fee_master(class_id)
     });
 </script>
 		
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>                                                           
 <script type="text/javascript">
 $(document).ready(function () {
 	$('.mydatepicker').datepicker({
